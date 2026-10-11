@@ -16,4 +16,4 @@ jobs:
           URL=$(sed -n "s/^export const SUPABASE_URL = '\(.*\)';/\1/p" public/js/config.js)
           CLE=$(sed -n "s/^export const SUPABASE_CLE = '\(.*\)';/\1/p" public/js/config.js)
           if [ -z "$URL" ] || [ -z "$CLE" ]; then echo "Base pas encore configurée."; exit 0; fi
-          curl -fsS "$URL/rest/v1/elements?select=cle&limit=1" -H "apikey: $CLE" -H "Authorization: Bearer $CLE"
+          curl -fsS "$URL/rest/v1/elements?select=cle&limit=1" -H "apikey: $CLE"
