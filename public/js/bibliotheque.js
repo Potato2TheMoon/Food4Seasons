@@ -5,6 +5,7 @@ import {
   UNITES, MOIS, trierParNom, chercher, horsSaison, tientJusquauMercredi,
   seCongele, formaterQuantite, aVerifier, nouvelId,
 } from './recettes.js';
+import { lireRecetteCollee } from './import.js';
 
 let recherche = '';
 const TOUTE_L_ANNEE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -52,10 +53,53 @@ export function ajout() {
     groupe(
       el('a', { class: 'ligne lien', href: '#edition/nouvelle' },
         el('span', { class: 'ligne-texte' }, 'Créer à la main'), svg(ICONES.chevron, 'icone chevron')),
-      el('div', { class: 'ligne desactivee' },
-        el('span', { class: 'ligne-texte' }, 'Coller une recette du skill Claude'), el('span', { class: 'secondaire' }, 'étape F')),
+      el('a', { class: 'ligne lien', href: '#coller' },
+        el('span', { class: 'ligne-texte' }, 'Coller une recette du skill Claude'), svg(ICONES.chevron, 'icone chevron')),
     ),
     el('p', { class: 'pied-groupe' }, 'Pour importer un texte ou un lien, ou trouver une idée, passe par le skill Food4Seasons dans l’app Claude.'),
+  ];
+}
+
+// --- Coller une recette préparée par le skill (06 étape F) ---
+
+export function coller() {
+  const zone = el('textarea', {
+    class: 'champ zone-collage', rows: '10', 'aria-label': 'Recette à coller',
+    placeholder: 'Colle ici le bloc rendu par le skill Food4Seasons',
+  });
+
+  async function lire() {
+    try {
+      const { recette, nouveaux } = lireRecetteCollee(zone.value, await db.tout('ingredients'));
+      // Le brouillon à relire s'ouvre avec la recette lue (03 décision 8).
+      document.querySelector('.message')?.remove();
+      brouillon = { pour: 'nouvelle', recette, nouveaux };
+      location.hash = '#edition/nouvelle';
+    } catch (erreur) {
+      message(erreur.message);
+    }
+  }
+
+  async function collerPressePapiers() {
+    try {
+      zone.value = await navigator.clipboard.readText();
+      lire();
+    } catch {
+      zone.focus();
+      message('Touche longuement la zone puis « Coller ».');
+    }
+  }
+
+  return [
+    barre({ retour: '#ajout', titreRetour: 'Ajouter' }),
+    el('h1', {}, 'Coller une recette'),
+    el('p', { class: 'pied-groupe intro' }, 'Dans l’app Claude, demande au skill Food4Seasons la recette « pour le site », copie le bloc qu’il rend, puis colle-le ici.'),
+    navigator.clipboard?.readText
+      ? el('button', { class: 'bouton-principal', type: 'button', onclick: collerPressePapiers }, 'Coller et lire')
+      : null,
+    groupe(el('div', { class: 'ligne' }, zone)),
+    el('button', { class: 'bouton-secondaire', type: 'button', onclick: lire }, 'Lire la recette'),
+    el('p', { class: 'pied-groupe' }, 'Rien n’est enregistré avant ta relecture : la recette s’ouvre dans le brouillon, avec les champs vides et les ingrédients nouveaux signalés.'),
   ];
 }
 

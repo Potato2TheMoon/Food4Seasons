@@ -255,3 +255,9 @@ a.bouton-principal { text-align: center; text-decoration: none; }
   flex: none; font: inherit; font-weight: 600; font-size: 15px; color: var(--accent);
   background: var(--accent-clair); border: 0; border-radius: 16px; padding: 6px 14px; cursor: pointer;
 }
+
+/* --- Étape F : coller une recette --- */
+.zone-collage { font-size: 15px; min-height: 180px; }
+.pied-groupe.intro { margin: 0 4px 12px; font-size: 15px; }
+button.bouton-secondaire { width: 100%; border: 0; font: inherit; font-weight: 600; cursor: pointer; }
+.intro + .bouton-principal { margin: 0 0 16px; }

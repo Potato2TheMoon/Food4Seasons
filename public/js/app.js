@@ -18,6 +18,7 @@ const ECRANS = {
   congelateur: { onglet: 'congelateur', afficher: () => congelateur.inventaire(rafraichir) },
   bibliotheque: { onglet: 'bibliotheque', afficher: () => bibliotheque.liste(blocSauvegarde) },
   ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },
+  coller: { onglet: 'bibliotheque', afficher: bibliotheque.coller },
   recette: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.fiche(id) },
   edition: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.edition(id, rafraichir) },
 };
