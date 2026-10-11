@@ -24,6 +24,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # Chaque publication donne une adresse nouvelle aux fichiers du site, pour que Safari
+      # ne mélange jamais des fichiers anciens (gardés en cache) et nouveaux.
+      - name: Numéroter les fichiers
+        run: |
+          V=${GITHUB_SHA::7}
+          sed -i -E "s#(from '\./[a-z-]+\.js)'#\1?v=$V'#g" public/js/*.js
+          sed -i -e "s#href=\"styles.css\"#href=\"styles.css?v=$V\"#" -e "s#src=\"js/app.js\"#src=\"js/app.js?v=$V\"#" public/index.html
+          grep -c "?v=$V" public/index.html public/js/app.js
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public
