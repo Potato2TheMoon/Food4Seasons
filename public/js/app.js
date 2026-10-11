@@ -160,6 +160,12 @@ champFichier.addEventListener('change', async () => {
 
 // --- Démarrage ---
 
+addEventListener('food4seasons-bloque', () => {
+  vue.replaceChildren(el('h1', {}, 'Food4Seasons'), groupe(el('div', { class: 'vide' },
+    el('strong', {}, 'Mise à jour en attente'),
+    'Le site est encore ouvert dans un autre onglet ou une autre fenêtre avec l’ancienne version. Ferme-les, puis recharge cette page.')));
+});
+
 async function demarrer() {
   // Demande à Safari de ne pas effacer les données de la page.
   navigator.storage?.persist?.();

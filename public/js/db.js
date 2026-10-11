@@ -34,7 +34,14 @@ export function ouvrir() {
       }
       if (!base.objectStoreNames.contains(ATTENTE)) base.createObjectStore(ATTENTE, { keyPath: 'id' });
     };
-    requete.onsuccess = () => resoudre(requete.result);
+    // Une ancienne version du site encore ouverte dans un autre onglet empêche la mise à jour de la base.
+    requete.onblocked = () => dispatchEvent(new Event('food4seasons-bloque'));
+    requete.onsuccess = () => {
+      const base = requete.result;
+      // Si une version plus récente du site s'ouvre ailleurs, on lui laisse la place.
+      base.onversionchange = () => { base.close(); location.reload(); };
+      resoudre(base);
+    };
     requete.onerror = () => rejeter(requete.error);
   });
   return ouverture;
