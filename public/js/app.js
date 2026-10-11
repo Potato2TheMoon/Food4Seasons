@@ -1,84 +1,76 @@
 import * as db from './db.js';
+import { el, message, groupe } from './ui.js';
+import * as bibliotheque from './bibliotheque.js';
 
 const vue = document.getElementById('vue');
 const champFichier = document.getElementById('fichier-restauration');
 
-function el(balise, attributs = {}, ...enfants) {
-  const noeud = document.createElement(balise);
-  for (const [nom, valeur] of Object.entries(attributs)) {
-    if (nom.startsWith('on')) noeud.addEventListener(nom.slice(2), valeur);
-    else noeud.setAttribute(nom, valeur);
-  }
-  noeud.append(...enfants.flat().filter((e) => e != null));
-  return noeud;
-}
+// --- Navigation : onglets (04 décision 3) et écrans de la Bibliothèque ---
 
-function message(texte) {
-  const bulle = el('div', { class: 'message', role: 'status' }, texte);
-  document.body.append(bulle);
-  setTimeout(() => bulle.remove(), 3500);
-}
-
-function groupe(...lignes) {
-  return el('div', { class: 'groupe' }, ...lignes);
-}
-
-function vide(titre, texte) {
-  return groupe(el('div', { class: 'vide' }, el('strong', {}, titre), texte));
-}
-
-// --- Onglets (04 décision 3) ---
-
-const ONGLETS = {
-  semaine: afficherSemaine,
-  congelateur: afficherCongelateur,
-  bibliotheque: afficherBibliotheque,
+const ECRANS = {
+  semaine: { onglet: 'semaine', afficher: afficherSemaine },
+  congelateur: { onglet: 'congelateur', afficher: afficherCongelateur },
+  bibliotheque: { onglet: 'bibliotheque', afficher: () => bibliotheque.liste(blocSauvegarde) },
+  ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },
+  recette: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.fiche(id) },
+  edition: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.edition(id, rafraichir) },
 };
 
-async function afficher() {
-  let onglet = location.hash.slice(1);
-  if (!ONGLETS[onglet]) onglet = 'semaine'; // l'app s'ouvre sur la semaine (04 décision 1)
+function route() {
+  const [nom, parametre] = location.hash.slice(1).split('/');
+  // L'app s'ouvre sur la semaine (04 décision 1).
+  return ECRANS[nom] ? { ecran: ECRANS[nom], nom, parametre: decodeURIComponent(parametre ?? '') } : { ecran: ECRANS.semaine, nom: 'semaine' };
+}
+
+async function dessiner() {
+  const { ecran, nom, parametre } = route();
+  if (nom !== 'edition') bibliotheque.quitterEdition();
   for (const lien of document.querySelectorAll('.onglets a')) {
-    if (lien.dataset.onglet === onglet) lien.setAttribute('aria-current', 'page');
+    if (lien.dataset.onglet === ecran.onglet) lien.setAttribute('aria-current', 'page');
     else lien.removeAttribute('aria-current');
   }
-  vue.replaceChildren(...(await ONGLETS[onglet]()));
+  vue.replaceChildren(...(await ecran.afficher(parametre)).filter((e) => e != null && e !== false));
+}
+
+async function afficher() {
+  await dessiner();
   window.scrollTo(0, 0);
+}
+
+// Redessine l'écran en gardant la position (utilisé pendant l'édition).
+async function rafraichir() {
+  const position = window.scrollY;
+  await dessiner();
+  window.scrollTo(0, position);
 }
 
 async function afficherSemaine() {
   return [
     el('h1', {}, 'Semaine'),
-    vide('Aucune recette prévue', 'Le choix des recettes de la semaine arrive à l’étape C.'),
+    groupe(el('div', { class: 'vide' }, el('strong', {}, 'Aucune recette prévue'), 'Le choix des recettes de la semaine arrive à l’étape C.')),
   ];
 }
 
 async function afficherCongelateur() {
   return [
     el('h1', {}, 'Congélateur'),
-    vide('Congélateur vide', 'L’inventaire du congélateur arrive à l’étape E.'),
+    groupe(el('div', { class: 'vide' }, el('strong', {}, 'Congélateur vide'), 'L’inventaire du congélateur arrive à l’étape E.')),
   ];
 }
 
-async function afficherBibliotheque() {
-  const nbRecettes = await db.compter('recettes');
-  const nbIngredients = await db.compter('ingredients');
+// --- Sauvegarder / Restaurer (01 point 10), en bas de la Bibliothèque ---
+
+function blocSauvegarde() {
   return [
-    el('h1', {}, 'Bibliothèque'),
-    nbRecettes
-      ? groupe(el('div', { class: 'ligne' }, `${nbRecettes} recette(s)`))
-      : vide('Aucune recette', 'L’ajout de recettes arrive à l’étape B.'),
     el('div', { class: 'entete-groupe' }, 'Sauvegarde'),
     groupe(
       el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: sauvegarder }, 'Sauvegarder dans un fichier')),
       el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: () => champFichier.click() }, 'Restaurer depuis un fichier')),
     ),
     el('p', { class: 'pied-groupe' },
-      `Toutes tes données restent sur cet appareil. Sauvegarde-les régulièrement, par exemple dans iCloud Drive. Catalogue : ${nbIngredients} ingrédients.`),
+      'Toutes tes données restent sur cet appareil. Sauvegarde-les régulièrement, par exemple dans iCloud Drive.'),
   ];
 }
-
-// --- Sauvegarder / Restaurer (01 point 10) ---
 
 async function sauvegarder() {
   const contenu = JSON.stringify(await db.exporter());

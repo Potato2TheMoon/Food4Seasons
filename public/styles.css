@@ -10,6 +10,7 @@
   --accent-clair: #FCEBD5;
   --barre: rgba(249, 249, 249, 0.92);
   --danger: #FF3B30;
+  --champ-fond: rgba(118, 118, 128, 0.12);
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -23,6 +24,7 @@
     --accent-clair: #3A2A12;
     --barre: rgba(22, 22, 22, 0.92);
     --danger: #FF453A;
+    --champ-fond: rgba(118, 118, 128, 0.24);
   }
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -90,3 +92,110 @@ button.action:disabled { color: var(--texte-2); }
   stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
 }
 .onglets a[aria-current="page"] { color: var(--accent); }
+
+/* --- Étape B : bibliothèque, fiche recette, brouillon --- */
+.icone {
+  width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.icone.chevron { width: 16px; height: 16px; color: var(--texte-2); opacity: 0.6; margin-left: auto; }
+
+.entete-onglet { display: flex; align-items: flex-end; justify-content: space-between; }
+.bouton-rond {
+  display: grid; place-items: center; width: 36px; height: 36px; margin: 0 4px 16px;
+  border-radius: 50%; background: var(--accent-clair); color: var(--accent);
+}
+.bouton-rond .icone { width: 22px; height: 22px; stroke-width: 2.2; }
+
+.recherche {
+  display: flex; align-items: center; gap: 6px; margin: 0 0 16px;
+  background: var(--champ-fond); border-radius: 10px; padding: 7px 10px; color: var(--texte-2);
+}
+.recherche input { flex: 1; border: 0; background: none; font: inherit; color: var(--texte); outline: none; min-width: 0; }
+
+a.ligne { color: inherit; text-decoration: none; }
+.ligne.lien:active { background: var(--separateur); }
+.ligne-texte { flex: 1; min-width: 0; }
+.ligne.desactivee { color: var(--texte-2); }
+
+.vignette {
+  width: 44px; height: 44px; flex: none; border-radius: 8px; object-fit: cover;
+  display: grid; place-items: center;
+}
+.vignette.remplacement { background: var(--accent-clair); color: var(--accent); }
+.vignette.grande { width: 72px; height: 72px; border-radius: 12px; }
+.vignette.grande .icone { width: 30px; height: 30px; }
+
+.barre-nav {
+  position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center;
+  margin: 0 -16px; padding: calc(10px + env(safe-area-inset-top)) 16px 10px; background: var(--fond);
+}
+.barre-nav + h1, .barre-nav + .banniere { margin-top: 8px; }
+.barre-retour, .barre-action {
+  display: flex; align-items: center; gap: 2px; color: var(--accent); text-decoration: none;
+  font: inherit; background: none; border: 0; padding: 4px 0; cursor: pointer;
+}
+.barre-retour .icone { width: 22px; height: 22px; stroke-width: 2.2; margin-left: -6px; }
+.barre-action.principale { font-weight: 600; }
+
+.banniere { display: block; width: 100%; height: 220px; object-fit: cover; border-radius: 12px; }
+.titre-fiche { margin-top: 16px; font-size: 30px; }
+.mentions { display: flex; flex-direction: column; gap: 4px; margin: 0 4px; }
+.mention { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--texte-2); }
+.mention .icone { width: 15px; height: 15px; }
+
+.etape { align-items: flex-start; }
+.numero {
+  flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent-clair); color: var(--accent); font-size: 14px; font-weight: 600; margin-top: 1px;
+}
+
+/* Formulaire du brouillon */
+.champ {
+  font: inherit; color: var(--texte); background: var(--champ-fond); border: 0; border-radius: 8px;
+  padding: 7px 10px; min-width: 0; width: 100%; outline: none;
+}
+.champ:focus { box-shadow: 0 0 0 2px var(--accent); }
+.champ:disabled { opacity: 0.4; }
+.champ.droite { margin-left: auto; width: auto; flex: 1; text-align: right; }
+.champ.court { flex: none; width: 76px; }
+textarea.champ { resize: vertical; line-height: 1.35; }
+select.champ { -webkit-appearance: none; appearance: none; }
+
+.ligne.ingredient { flex-direction: column; align-items: stretch; gap: 8px; }
+.ingredient-champs { display: grid; grid-template-columns: minmax(0, 1fr) 58px 86px 24px; gap: 6px; align-items: center; }
+.bouton-icone {
+  width: 28px; height: 28px; display: grid; place-items: center; padding: 0;
+  border: 0; background: none; color: var(--texte-2); cursor: pointer;
+}
+.nouvel-ingredient { display: flex; flex-direction: column; gap: 8px; padding: 2px 0 4px; }
+.segments { display: inline-flex; background: var(--champ-fond); border-radius: 8px; padding: 2px; align-self: flex-start; }
+.segments.droite { margin-left: auto; align-self: center; }
+.segment {
+  font: inherit; font-size: 15px; border: 0; background: none; color: var(--texte);
+  padding: 4px 14px; border-radius: 6px; cursor: pointer;
+}
+.segment.actif { background: var(--bloc); box-shadow: 0 1px 3px rgba(0,0,0,0.15); font-weight: 600; }
+.mois { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+.puce {
+  font: inherit; font-size: 13px; aspect-ratio: 1; border-radius: 50%; border: 0; padding: 0;
+  background: var(--champ-fond); color: var(--texte-2); cursor: pointer;
+}
+.puce.active { background: var(--accent); color: #fff; font-weight: 600; }
+.aide { font-size: 13px; color: var(--texte-2); }
+
+.a-completer { font-size: 13px; color: var(--accent); white-space: nowrap; }
+.avertissement {
+  display: flex; gap: 8px; align-items: flex-start; margin: 0 0 8px; padding: 10px 12px;
+  background: var(--bloc); border-radius: 10px; font-size: 14px; color: var(--texte-2);
+}
+.avertissement .icone { color: var(--accent); width: 18px; height: 18px; margin-top: 1px; }
+
+.ligne.photo { gap: 16px; }
+.ligne.photo label.action { width: auto; cursor: pointer; color: var(--accent); }
+.action.discret { width: auto; color: var(--danger); margin-left: auto; }
+
+.bouton-principal {
+  display: block; width: 100%; margin: 28px 0 8px; padding: 14px; border: 0; border-radius: 12px;
+  background: var(--accent); color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+}
