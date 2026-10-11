@@ -193,6 +193,8 @@ select.champ { -webkit-appearance: none; appearance: none; }
 
 .ligne.photo { gap: 16px; }
 .ligne.photo label.action { width: auto; cursor: pointer; color: var(--accent); }
+.action.danger { color: var(--danger); }
+.bouton-principal + .groupe { margin-top: 24px; }
 .action.discret { width: auto; color: var(--danger); margin-left: auto; }
 
 .bouton-principal {

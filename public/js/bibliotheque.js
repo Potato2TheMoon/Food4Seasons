@@ -155,6 +155,14 @@ export async function edition(id, rafraichir) {
     location.hash = `#recette/${recette.id}`;
   }
 
+  async function supprimerRecette() {
+    if (!confirm(`Supprimer « ${recette.nom || 'cette recette'} » ? Elle disparaîtra de la bibliothèque.`)) return;
+    await db.supprimer('recettes', id);
+    brouillon = null;
+    message('Recette supprimée.');
+    location.hash = '#bibliotheque';
+  }
+
   function annuler() {
     brouillon = null;
     location.hash = retour;
@@ -280,6 +288,8 @@ export async function edition(id, rafraichir) {
       }, 'Ajouter une étape')),
     ),
     el('button', { class: 'bouton-principal', type: 'button', onclick: enregistrer }, 'Enregistrer la recette'),
+    id === 'nouvelle' ? null : groupe(el('div', { class: 'ligne' },
+      el('button', { class: 'action danger', type: 'button', onclick: supprimerRecette }, 'Supprimer la recette'))),
   ];
 }
 
