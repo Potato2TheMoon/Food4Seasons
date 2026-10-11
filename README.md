@@ -18,7 +18,7 @@ puis ouvrir http://localhost:8000.
 
 ## En ligne
 
-Le site est publié sur GitHub Pages : https://potato2themoon.github.io/food4seasons/
+Le site est publié sur GitHub Pages : https://potato2themoon.github.io/Food4Seasons/
 (dépôt public : le code et le catalogue sont visibles, les données personnelles restent dans Safari).
 
 Sur l'iPhone : ouvrir l'adresse dans Safari, puis Partager > « Sur l'écran d'accueil ».
