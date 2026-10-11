@@ -1,14 +1,16 @@
 import * as db from './db.js';
 import { el, message, groupe } from './ui.js';
 import * as bibliotheque from './bibliotheque.js';
+import * as semaine from './semaine.js';
 
 const vue = document.getElementById('vue');
 const champFichier = document.getElementById('fichier-restauration');
 
-// --- Navigation : onglets (04 décision 3) et écrans de la Bibliothèque ---
+// --- Navigation : onglets (04 décision 3) et leurs écrans ---
 
 const ECRANS = {
-  semaine: { onglet: 'semaine', afficher: afficherSemaine },
+  semaine: { onglet: 'semaine', afficher: (quelle) => semaine.semaine(quelle, rafraichir) },
+  choix: { onglet: 'semaine', afficher: (id) => semaine.choix(id) },
   congelateur: { onglet: 'congelateur', afficher: afficherCongelateur },
   bibliotheque: { onglet: 'bibliotheque', afficher: () => bibliotheque.liste(blocSauvegarde) },
   ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },
@@ -25,11 +27,12 @@ function route() {
 async function dessiner() {
   const { ecran, nom, parametre } = route();
   if (nom !== 'edition') bibliotheque.quitterEdition();
+  if (nom !== 'choix') semaine.quitterChoix();
   for (const lien of document.querySelectorAll('.onglets a')) {
     if (lien.dataset.onglet === ecran.onglet) lien.setAttribute('aria-current', 'page');
     else lien.removeAttribute('aria-current');
   }
-  vue.replaceChildren(...(await ecran.afficher(parametre)).filter((e) => e != null && e !== false));
+  vue.replaceChildren(...(await ecran.afficher(parametre)).flat(Infinity).filter((e) => e != null && e !== false));
 }
 
 async function afficher() {
@@ -42,13 +45,6 @@ async function rafraichir() {
   const position = window.scrollY;
   await dessiner();
   window.scrollTo(0, position);
-}
-
-async function afficherSemaine() {
-  return [
-    el('h1', {}, 'Semaine'),
-    groupe(el('div', { class: 'vide' }, el('strong', {}, 'Aucune recette prévue'), 'Le choix des recettes de la semaine arrive à l’étape C.')),
-  ];
 }
 
 async function afficherCongelateur() {
