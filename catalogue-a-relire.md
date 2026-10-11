@@ -15,7 +15,7 @@ Légende des mois : J F M A M J J A S O N D ; ● = de saison. Lieu : marché (f
 | Échalote | ● ● ● ● ● ● ● ● ● ● ● ● | marché |
 | Pomme de terre | ● ● ● ● ● ● ● ● ● ● ● ● | marché |
 | Champignon de Paris | ● ● ● ● ● ● ● ● ● ● ● ● | marché |
-| Betterave | ● ● ● ● ● ● ● ● ● ● ● ● | marché |
+| Betterave | ● ● ● · · · ● ● ● ● ● ● | marché |
 | Artichaut | · · · · ● ● ● ● ● · · · | marché |
 | Asperge | · · · ● ● ● · · · · · · | marché |
 | Aubergine | · · · · · ● ● ● ● · · · | marché |
@@ -106,5 +106,5 @@ Riz · Pâtes · Semoule · Boulgour · Quinoa · Lentilles vertes · Lentilles 
 
 ## Points à trancher
 
-- Ail, oignon, échalote, pomme de terre, carotte, betterave, champignon de Paris, citron et pomme sont marqués « toute l'année » (frais ou en conservation), pour ne pas bloquer les recettes. À garder ainsi ?
-- Gingembre frais et citron vert : importés, classés en herbes / fruits « toute l'année » au marché. Ou plutôt épicerie au supermarché ?
+- ~~Ail, oignon, échalote, pomme de terre, carotte, champignon de Paris, citron et pomme « toute l'année »~~ Validé par Potato le 2026-10-11. La betterave passe de juillet à mars (fraîche l'été, de conservation l'hiver), à confirmer.
+- ~~Gingembre frais et citron vert~~ Gardés « toute l'année » au marché, validé par Potato le 2026-10-11.
