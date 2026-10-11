@@ -1,0 +1,92 @@
+/* Apparence iOS imitée (05 décisions 1 à 3) : police système, blocs arrondis,
+   grands titres, barre d'onglets ; mode clair et sombre selon l'iPhone. */
+:root {
+  --fond: #F2F2F7;
+  --bloc: #FFFFFF;
+  --texte: #000000;
+  --texte-2: #6C6C70;
+  --separateur: rgba(60, 60, 67, 0.18);
+  --accent: #E07B00;
+  --accent-clair: #FCEBD5;
+  --barre: rgba(249, 249, 249, 0.92);
+  --danger: #FF3B30;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #000000;
+    --bloc: #1C1C1E;
+    --texte: #FFFFFF;
+    --texte-2: #8E8E93;
+    --separateur: rgba(84, 84, 88, 0.6);
+    --accent: #FF9F0A;
+    --accent-clair: #3A2A12;
+    --barre: rgba(22, 22, 22, 0.92);
+    --danger: #FF453A;
+  }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.35;
+  color: var(--texte);
+  background: var(--fond);
+  padding: env(safe-area-inset-top) 0 calc(56px + env(safe-area-inset-bottom));
+  -webkit-text-size-adjust: 100%;
+}
+main { max-width: 640px; margin: 0 auto; padding: 0 16px 24px; }
+
+h1 { font-size: 34px; font-weight: 700; letter-spacing: 0.01em; margin: 52px 4px 12px; }
+.entete-groupe {
+  font-size: 13px; text-transform: uppercase; color: var(--texte-2);
+  margin: 24px 16px 6px; letter-spacing: 0.02em;
+}
+.pied-groupe { font-size: 13px; color: var(--texte-2); margin: 6px 16px 0; }
+
+.groupe { background: var(--bloc); border-radius: 10px; overflow: hidden; }
+.ligne {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 44px; padding: 11px 16px; position: relative;
+}
+.ligne + .ligne::before {
+  content: ""; position: absolute; top: 0; left: 16px; right: 0;
+  border-top: 0.5px solid var(--separateur);
+}
+.ligne .secondaire { color: var(--texte-2); margin-left: auto; }
+
+.vide { text-align: center; color: var(--texte-2); padding: 28px 16px; }
+.vide strong { display: block; color: var(--texte); font-size: 20px; margin-bottom: 6px; }
+
+button.action {
+  font: inherit; color: var(--accent); background: none; border: 0;
+  padding: 0; cursor: pointer; text-align: left; width: 100%;
+}
+button.action:disabled { color: var(--texte-2); }
+
+.message {
+  position: fixed; left: 50%; bottom: calc(72px + env(safe-area-inset-bottom));
+  transform: translateX(-50%); max-width: calc(100% - 32px);
+  background: var(--bloc); color: var(--texte); border-radius: 12px;
+  padding: 10px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  font-size: 15px; z-index: 20;
+}
+
+.onglets {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: flex; justify-content: space-around;
+  padding: 6px 0 calc(4px + env(safe-area-inset-bottom));
+  background: var(--barre);
+  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid var(--separateur);
+}
+.onglets a {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  color: var(--texte-2); text-decoration: none; font-size: 10px; font-weight: 500;
+}
+.onglets svg {
+  width: 26px; height: 26px; fill: none; stroke: currentColor;
+  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+.onglets a[aria-current="page"] { color: var(--accent); }

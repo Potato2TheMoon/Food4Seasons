@@ -1,0 +1,1445 @@
+[
+ {
+  "nom": "Carotte",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Oignon",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Oignon rouge",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Ail",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Échalote",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Pomme de terre",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Champignon de Paris",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Betterave",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Artichaut",
+  "categorie": "legume",
+  "mois": [
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Asperge",
+  "categorie": "legume",
+  "mois": [
+   4,
+   5,
+   6
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Aubergine",
+  "categorie": "legume",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Blette",
+  "categorie": "legume",
+  "mois": [
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Brocoli",
+  "categorie": "legume",
+  "mois": [
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Céleri branche",
+  "categorie": "legume",
+  "mois": [
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Céleri-rave",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Chou blanc",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Chou vert",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Chou rouge",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Chou de Bruxelles",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Chou-fleur",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Chou kale",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Concombre",
+  "categorie": "legume",
+  "mois": [
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Courgette",
+  "categorie": "legume",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Butternut",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Potimarron",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Potiron",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Courge musquée",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Endive",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Épinard",
+  "categorie": "legume",
+  "mois": [
+   3,
+   4,
+   5,
+   6,
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Fenouil",
+  "categorie": "legume",
+  "mois": [
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Fève",
+  "categorie": "legume",
+  "mois": [
+   5,
+   6,
+   7
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Haricot vert",
+  "categorie": "legume",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Mâche",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Maïs",
+  "categorie": "legume",
+  "mois": [
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Navet",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Panais",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Petit pois",
+  "categorie": "legume",
+  "mois": [
+   5,
+   6,
+   7
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Poireau",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Poivron",
+  "categorie": "legume",
+  "mois": [
+   7,
+   8,
+   9,
+   10
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Radis",
+  "categorie": "legume",
+  "mois": [
+   4,
+   5,
+   6,
+   7
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Laitue",
+  "categorie": "legume",
+  "mois": [
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Tomate",
+  "categorie": "legume",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Topinambour",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Cèpe",
+  "categorie": "legume",
+  "mois": [
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Girolle",
+  "categorie": "legume",
+  "mois": [
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Patate douce",
+  "categorie": "legume",
+  "mois": [
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Rutabaga",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Salsifis",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Citron",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Pomme",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Abricot",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Cerise",
+  "categorie": "fruit",
+  "mois": [
+   5,
+   6,
+   7
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Châtaigne",
+  "categorie": "fruit",
+  "mois": [
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Clémentine",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Coing",
+  "categorie": "fruit",
+  "mois": [
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Figue",
+  "categorie": "fruit",
+  "mois": [
+   8,
+   9,
+   10
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Fraise",
+  "categorie": "fruit",
+  "mois": [
+   5,
+   6,
+   7
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Framboise",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Kiwi",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Melon",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Noix",
+  "categorie": "fruit",
+  "mois": [
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Orange",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
+   3,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Pêche",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Nectarine",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Poire",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Prune",
+  "categorie": "fruit",
+  "mois": [
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Raisin",
+  "categorie": "fruit",
+  "mois": [
+   9,
+   10
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Rhubarbe",
+  "categorie": "fruit",
+  "mois": [
+   4,
+   5,
+   6
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Citron vert",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Persil",
+  "categorie": "herbe",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Coriandre",
+  "categorie": "herbe",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Thym",
+  "categorie": "herbe",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Romarin",
+  "categorie": "herbe",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Laurier",
+  "categorie": "herbe",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Sauge",
+  "categorie": "herbe",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Ciboulette",
+  "categorie": "herbe",
+  "mois": [
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Basilic",
+  "categorie": "herbe",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Menthe",
+  "categorie": "herbe",
+  "mois": [
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Estragon",
+  "categorie": "herbe",
+  "mois": [
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Aneth",
+  "categorie": "herbe",
+  "mois": [
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Gingembre frais",
+  "categorie": "herbe",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Riz",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Pâtes",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Semoule",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Boulgour",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Quinoa",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Lentilles vertes",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Lentilles corail",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Pois chiches",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Haricots blancs",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Haricots rouges",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Farine",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Sucre",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Huile d'olive",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Huile de tournesol",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Vinaigre",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Moutarde",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Sauce soja",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Concentré de tomate",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Tomates concassées",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Lait de coco",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Bouillon de légumes",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Bouillon de volaille",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Sel",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Poivre",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Cumin",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Curry",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Paprika",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Curcuma",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Cannelle",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Muscade",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Piment",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Herbes de Provence",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Beurre",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Crème fraîche",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Lait",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Œuf",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Yaourt nature",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Parmesan",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Comté",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Mozzarella",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Feta",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Chèvre",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Poulet",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Bœuf haché",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Bœuf à braiser",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Porc",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Lardons",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Saucisse",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Saumon",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Cabillaud",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Thon en boîte",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Pain",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Pâte brisée",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Pâte feuilletée",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Vin blanc",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Vin rouge",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Miel",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Amandes",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ },
+ {
+  "nom": "Tofu",
+  "categorie": "epicerie",
+  "mois": [],
+  "lieu": "supermarche"
+ }
+]
