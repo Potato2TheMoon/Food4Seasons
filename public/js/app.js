@@ -2,6 +2,7 @@ import * as db from './db.js';
 import { el, message, groupe } from './ui.js';
 import * as bibliotheque from './bibliotheque.js';
 import * as semaine from './semaine.js';
+import * as courses from './courses.js';
 
 const vue = document.getElementById('vue');
 const champFichier = document.getElementById('fichier-restauration');
@@ -11,6 +12,7 @@ const champFichier = document.getElementById('fichier-restauration');
 const ECRANS = {
   semaine: { onglet: 'semaine', afficher: (quelle) => semaine.semaine(quelle, rafraichir) },
   choix: { onglet: 'semaine', afficher: (id) => semaine.choix(id) },
+  courses: { onglet: 'semaine', afficher: (id) => courses.courses(id, rafraichir) },
   congelateur: { onglet: 'congelateur', afficher: afficherCongelateur },
   bibliotheque: { onglet: 'bibliotheque', afficher: () => bibliotheque.liste(blocSauvegarde) },
   ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },

@@ -226,3 +226,21 @@ a.bouton-principal { text-align: center; text-decoration: none; }
 @media (prefers-color-scheme: dark) {
   .segment.actif { background: #636366; }
 }
+
+/* --- Étape D : liste de courses --- */
+.ligne.article { padding-right: 8px; gap: 4px; }
+.case {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 0;
+  font: inherit; color: inherit; background: none; border: 0; text-align: left; cursor: pointer;
+}
+.case-icone { width: 24px; height: 24px; color: var(--texte-2); stroke-width: 1.5; }
+.coche .case-icone { color: var(--accent); }
+.case-icone .plein { fill: currentColor; stroke: none; }
+.case-icone .trait { stroke: #fff; stroke-width: 2.2; }
+.coche .article-nom, .coche .secondaire { color: var(--texte-2); text-decoration: line-through; }
+.article-en-plus {
+  margin-left: 8px; font-size: 12px; font-weight: 600; color: var(--accent);
+  background: var(--accent-clair); border-radius: 6px; padding: 1px 6px;
+}
+.ligne.article .secondaire { margin-left: auto; text-align: right; }
+.ligne.article .bouton-icone .icone { width: 18px; height: 18px; }

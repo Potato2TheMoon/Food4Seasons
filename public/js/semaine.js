@@ -26,13 +26,13 @@ export function dimancheAVenir(aujourdhui = new Date()) {
   return versId(dimanche);
 }
 
-function dimanchePrecedent() {
+export function dimanchePrecedent() {
   const dimanche = depuisId(dimancheAVenir());
   dimanche.setDate(dimanche.getDate() - 7);
   return versId(dimanche);
 }
 
-function dateLongue(id) {
+export function dateLongue(id) {
   return depuisId(id).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 }
 
@@ -41,8 +41,13 @@ function moisDe(id) {
   return depuisId(id).getMonth() + 1;
 }
 
-async function lireSemaine(id) {
+export async function lireSemaine(id) {
   return (await db.tout('semaines')).find((s) => s.id === id) ?? { id, recettes: [] };
+}
+
+function resteAAcheter(liste) {
+  const restants = liste.articles.filter((a) => !a.coche).length;
+  return restants ? `${restants} à acheter` : 'tout est pris';
 }
 
 // --- Écran Semaine ---
@@ -103,8 +108,10 @@ export async function semaine(quelle, rafraichir) {
         el('div', { class: 'pile' }, prevues.map(blocRecette)),
         el('a', { class: 'bouton-secondaire', href: `#choix/${id}` }, 'Ajouter une recette'),
         el('div', { class: 'entete-groupe' }, 'Courses'),
-        groupe(el('div', { class: 'ligne desactivee' },
-          el('span', { class: 'ligne-texte' }, 'Liste de courses'), el('span', { class: 'secondaire' }, 'étape D'))),
+        groupe(el('a', { class: 'ligne lien', href: `#courses/${id}` },
+          el('span', { class: 'ligne-texte' }, 'Liste de courses'),
+          donnees.liste ? el('span', { class: 'secondaire' }, resteAAcheter(donnees.liste)) : null,
+          svg(ICONES.chevron, 'icone chevron'))),
       ]
       : [
         vide('Aucune recette prévue', precedente
