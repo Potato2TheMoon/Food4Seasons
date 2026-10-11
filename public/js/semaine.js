@@ -1,7 +1,7 @@
 // Onglet Semaine (04 décisions 1, 2, 4, 5, 17, 18) : la semaine de cuisine et l'écran de choix des recettes.
 import * as db from './db.js';
 import { el, svg, ICONES, message, groupe, vide, barre, vignette, mention } from './ui.js';
-import { MOIS, trierParNom, horsSaison, tientJusquauMercredi } from './recettes.js';
+import { MOIS, trierParNom, horsSaison, tientJusquauMercredi, seCongele } from './recettes.js';
 
 const PORTIONS_PAR_DEFAUT = 4;
 let touteLaBibliotheque = false;
@@ -50,6 +50,20 @@ function resteAAcheter(liste) {
   return restants ? `${restants} à acheter` : 'tout est pris';
 }
 
+// Boutons − et + autour d'un nombre.
+function compteur(valeur, minimum, nom, changer) {
+  return el('span', { class: 'compteur' },
+    el('button', {
+      class: 'bouton-compteur', type: 'button', 'aria-label': `Une ${nom} de moins`, disabled: valeur <= minimum,
+      onclick: () => changer(-1),
+    }, '−'),
+    el('span', { class: 'compteur-valeur' }, valeur),
+    el('button', {
+      class: 'bouton-compteur', type: 'button', 'aria-label': `Une ${nom} de plus`,
+      onclick: () => changer(1),
+    }, '+'));
+}
+
 // --- Écran Semaine ---
 
 export async function semaine(quelle, rafraichir) {
@@ -65,6 +79,19 @@ export async function semaine(quelle, rafraichir) {
     rafraichir();
   }
 
+  // Chaque recette de la semaine a sa propre entrée au congélateur (02 décisions 4 et 16).
+  // Elle compte les portions restantes : changer les portions congelées la corrige d'autant.
+  async function changerCongelees(prevue, recette, delta) {
+    prevue.congelees = Math.max(0, (prevue.congelees ?? 0) + delta);
+    const cle = `${id}/${recette.id}`;
+    const entree = (await db.tout('congelateur')).find((e) => e.id === cle)
+      ?? { id: cle, recette: recette.id, semaine: id, date: id, portions: 0 };
+    entree.portions = Math.max(0, entree.portions + delta);
+    if (entree.portions > 0) await db.enregistrer('congelateur', entree);
+    else await db.supprimer('congelateur', cle);
+    enregistrer();
+  }
+
   function blocRecette(prevue) {
     const recette = recettes.get(prevue.recette);
     return groupe(
@@ -74,16 +101,12 @@ export async function semaine(quelle, rafraichir) {
           !tientJusquauMercredi(recette) ? el('span', { class: 'mentions' }, mention('triangle', 'Ne tient pas jusqu’au mercredi')) : null),
         svg(ICONES.chevron, 'icone chevron')),
       el('div', { class: 'ligne' }, 'Portions',
-        el('span', { class: 'compteur' },
-          el('button', {
-            class: 'bouton-compteur', type: 'button', 'aria-label': 'Une portion de moins', disabled: prevue.portions <= 1,
-            onclick: () => { prevue.portions -= 1; enregistrer(); },
-          }, '−'),
-          el('span', { class: 'compteur-valeur' }, prevue.portions),
-          el('button', {
-            class: 'bouton-compteur', type: 'button', 'aria-label': 'Une portion de plus',
-            onclick: () => { prevue.portions += 1; enregistrer(); },
-          }, '+'))),
+        compteur(prevue.portions, 1, 'portion', (delta) => { prevue.portions += delta; enregistrer(); })),
+      // Après la cuisson, on indique soi-même les portions congelées (03 décision 3).
+      seCongele(recette)
+        ? el('div', { class: 'ligne' }, 'Portions congelées',
+          compteur(prevue.congelees ?? 0, 0, 'portion congelée', (delta) => changerCongelees(prevue, recette, delta)))
+        : null,
       el('div', { class: 'ligne' }, el('button', {
         class: 'action danger', type: 'button',
         onclick: () => {

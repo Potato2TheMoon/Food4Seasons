@@ -31,16 +31,19 @@ export const ICONES = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   loupe: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>',
   croix: '<path d="M6 6l12 12M18 6 6 18"/>',
+  horloge: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   cercle: '<circle cx="12" cy="12" r="9"/>',
   coche: '<circle cx="12" cy="12" r="9" class="plein"/><path d="m7.8 12.3 2.8 2.8 5.6-5.8" class="trait"/>',
   echange: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
 };
 
-export function message(texte) {
+// Petite bulle en bas de l'écran ; avec une action (par exemple « Annuler »), elle reste un peu plus longtemps.
+export function message(texte, action) {
   document.querySelector('.message')?.remove();
-  const bulle = el('div', { class: 'message', role: 'status' }, texte);
+  const bulle = el('div', { class: 'message', role: 'status' }, texte,
+    action ? el('button', { class: 'message-action', type: 'button', onclick: () => { bulle.remove(); action.faire(); } }, action.libelle) : null);
   document.body.append(bulle);
-  setTimeout(() => bulle.remove(), 3500);
+  setTimeout(() => bulle.remove(), action ? 6000 : 3500);
 }
 
 export function groupe(...lignes) {

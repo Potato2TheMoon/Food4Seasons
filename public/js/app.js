@@ -3,6 +3,7 @@ import { el, message, groupe } from './ui.js';
 import * as bibliotheque from './bibliotheque.js';
 import * as semaine from './semaine.js';
 import * as courses from './courses.js';
+import * as congelateur from './congelateur.js';
 
 const vue = document.getElementById('vue');
 const champFichier = document.getElementById('fichier-restauration');
@@ -13,7 +14,7 @@ const ECRANS = {
   semaine: { onglet: 'semaine', afficher: (quelle) => semaine.semaine(quelle, rafraichir) },
   choix: { onglet: 'semaine', afficher: (id) => semaine.choix(id) },
   courses: { onglet: 'semaine', afficher: (id) => courses.courses(id, rafraichir) },
-  congelateur: { onglet: 'congelateur', afficher: afficherCongelateur },
+  congelateur: { onglet: 'congelateur', afficher: () => congelateur.inventaire(rafraichir) },
   bibliotheque: { onglet: 'bibliotheque', afficher: () => bibliotheque.liste(blocSauvegarde) },
   ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },
   recette: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.fiche(id) },
@@ -47,13 +48,6 @@ async function rafraichir() {
   const position = window.scrollY;
   await dessiner();
   window.scrollTo(0, position);
-}
-
-async function afficherCongelateur() {
-  return [
-    el('h1', {}, 'Congélateur'),
-    groupe(el('div', { class: 'vide' }, el('strong', {}, 'Congélateur vide'), 'L’inventaire du congélateur arrive à l’étape E.')),
-  ];
 }
 
 // --- Sauvegarder / Restaurer (01 point 10), en bas de la Bibliothèque ---
