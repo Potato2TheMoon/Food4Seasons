@@ -7,7 +7,7 @@ Site statique, sans serveur : les données restent dans Safari sur l'iPhone, ave
 
 - `public/` : le site publié tel quel (HTML, CSS, JavaScript, `catalogue.json`, icônes).
 - `catalogue-a-relire.md` : le catalogue d'ingrédients en version lisible, à relire avant validation.
-- `.gitlab-ci.yml` : publication automatique sur GitLab Pages à chaque envoi sur la branche principale.
+- `.github/workflows/pages.yml` : publication automatique sur GitHub Pages à chaque envoi sur la branche principale.
 
 ## Essayer en local
 
@@ -16,9 +16,9 @@ cd public && python3 -m http.server 8000
 ```
 puis ouvrir http://localhost:8000.
 
-## Mettre en ligne sur GitLab Pages
+## En ligne
 
-1. Créer un projet **privé** vide sur GitLab et y envoyer ce dossier.
-2. Paramètres > Général > Visibilité : régler **Pages** sur « Membres du projet uniquement ».
-3. Après le premier envoi, l'adresse du site apparaît dans Déploiement > Pages.
-4. Sur l'iPhone, ouvrir l'adresse dans Safari, se connecter à GitLab, puis Partager > « Sur l'écran d'accueil ».
+Le site est publié sur GitHub Pages : https://potato2themoon.github.io/food4seasons/
+(dépôt public : le code et le catalogue sont visibles, les données personnelles restent dans Safari).
+
+Sur l'iPhone : ouvrir l'adresse dans Safari, puis Partager > « Sur l'écran d'accueil ».
