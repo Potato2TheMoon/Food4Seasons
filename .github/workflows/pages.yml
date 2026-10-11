@@ -31,7 +31,10 @@ jobs:
           V=${GITHUB_SHA::7}
           sed -i -E "s#(from '\./[a-z-]+\.js)'#\1?v=$V'#g" public/js/*.js
           sed -i -e "s#href=\"styles.css\"#href=\"styles.css?v=$V\"#" -e "s#src=\"js/app.js\"#src=\"js/app.js?v=$V\"#" public/index.html
+          sed -i "s/VERSION = 'dev'/VERSION = '$V'/" public/js/version.js
+          echo "{\"version\":\"$V\"}" > public/version.json
           grep -c "?v=$V" public/index.html public/js/app.js
+          grep -c "$V" public/js/version.js public/version.json
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public

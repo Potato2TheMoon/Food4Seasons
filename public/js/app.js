@@ -5,6 +5,7 @@ import * as semaine from './semaine.js';
 import * as courses from './courses.js';
 import * as congelateur from './congelateur.js';
 import * as synchro from './synchro.js';
+import { VERSION } from './version.js';
 
 const vue = document.getElementById('vue');
 const champFichier = document.getElementById('fichier-restauration');
@@ -17,7 +18,7 @@ const ECRANS = {
   courses: { onglet: 'semaine', afficher: (id) => courses.courses(id, rafraichir) },
   congelateur: { onglet: 'congelateur', afficher: () => congelateur.inventaire(rafraichir) },
   bibliotheque: { onglet: 'bibliotheque', afficher: bibliotheque.liste },
-  reglages: { onglet: 'reglages', afficher: () => [el('h1', {}, 'Réglages'), ...blocSauvegarde()] },
+  reglages: { onglet: 'reglages', afficher: () => [el('h1', {}, 'Réglages'), ...blocSauvegarde(), ...blocVersion()] },
   ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },
   coller: { onglet: 'bibliotheque', afficher: bibliotheque.coller },
   recette: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.fiche(id) },
@@ -167,6 +168,36 @@ addEventListener('food4seasons-bloque', () => {
     'Le site est encore ouvert dans un autre onglet ou une autre fenêtre avec l’ancienne version. Ferme-les, puis recharge cette page.')));
 });
 
+function blocVersion() {
+  return [
+    el('div', { class: 'entete-groupe' }, 'Site'),
+    groupe(
+      el('div', { class: 'ligne' }, 'Version', el('span', { class: 'secondaire' }, VERSION)),
+      el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: () => recharger() }, 'Recharger le site')),
+    ),
+    el('p', { class: 'pied-groupe' }, 'Si un écran semble ancien ou vide, recharge le site : tes données ne sont pas touchées.'),
+  ];
+}
+
+// --- Mise à jour du site ---
+// Safari (et surtout l'app sur l'écran d'accueil) peut garder l'ancienne version en mémoire.
+// On compare avec la version publiée, et on propose de recharger en contournant le cache.
+let versionProposee = null;
+async function verifierVersion() {
+  if (VERSION === 'dev' || !navigator.onLine) return;
+  try {
+    const { version } = await (await fetch(`version.json?t=${Date.now()}`, { cache: 'no-store' })).json();
+    if (version && version !== VERSION && version !== versionProposee) {
+      versionProposee = version;
+      message('Une nouvelle version du site est disponible.', { libelle: 'Mettre à jour', faire: () => recharger(version) });
+    }
+  } catch { /* hors ligne : on réessaiera */ }
+}
+
+function recharger(version = Date.now()) {
+  location.replace(`${location.pathname}?v=${version}${location.hash}`);
+}
+
 async function demarrer() {
   // Demande à Safari de ne pas effacer les données de la page.
   navigator.storage?.persist?.();
@@ -178,6 +209,8 @@ async function demarrer() {
   }
   window.addEventListener('hashchange', afficher);
   await afficher();
+  verifierVersion();
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') verifierVersion(); });
   synchro.demarrer({
     // Données reçues d'un autre appareil : on redessine, sauf pendant une saisie.
     apresReception: () => {
