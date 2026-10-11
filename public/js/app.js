@@ -16,7 +16,8 @@ const ECRANS = {
   choix: { onglet: 'semaine', afficher: (id) => semaine.choix(id) },
   courses: { onglet: 'semaine', afficher: (id) => courses.courses(id, rafraichir) },
   congelateur: { onglet: 'congelateur', afficher: () => congelateur.inventaire(rafraichir) },
-  bibliotheque: { onglet: 'bibliotheque', afficher: () => bibliotheque.liste(blocSauvegarde) },
+  bibliotheque: { onglet: 'bibliotheque', afficher: bibliotheque.liste },
+  reglages: { onglet: 'reglages', afficher: () => [el('h1', {}, 'Réglages'), ...blocSauvegarde()] },
   ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },
   coller: { onglet: 'bibliotheque', afficher: bibliotheque.coller },
   recette: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.fiche(id) },
@@ -52,7 +53,7 @@ async function rafraichir() {
   window.scrollTo(0, position);
 }
 
-// --- Synchro entre appareils (06, 2026-10-11), en bas de la Bibliothèque ---
+// --- Synchro entre appareils (06, 2026-10-11), dans l'onglet Réglages ---
 
 function blocSynchro() {
   if (!synchro.configuree()) return [];
@@ -79,9 +80,8 @@ function blocSynchro() {
         el('div', { class: 'ligne' }, email),
         el('div', { class: 'ligne' }, motDePasse),
         el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: agir(false) }, 'Se connecter')),
-        el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: agir(true) }, 'Créer le compte')),
       ),
-      el('p', { class: 'pied-groupe' }, 'Connecte-toi avec le même compte sur l’iPhone et le Mac pour retrouver partout les mêmes données.'),
+      el('p', { class: 'pied-groupe' }, 'Connecte-toi avec ton compte sur chaque appareil pour retrouver partout les mêmes données.'),
     ];
   }
   const { derniere, erreur } = synchro.etat;
@@ -107,7 +107,7 @@ function blocSynchro() {
   ];
 }
 
-// --- Sauvegarder / Restaurer (01 point 10), en bas de la Bibliothèque ---
+// --- Sauvegarder / Restaurer (01 point 10), dans l'onglet Réglages ---
 
 function blocSauvegarde() {
   return [

@@ -94,7 +94,7 @@ async function jeton() {
   } catch (erreur) {
     if (!navigator.onLine) throw erreur;
     deconnecter();
-    throw new Error('Session expirée : reconnecte-toi dans la Bibliothèque.');
+    throw new Error('Session expirée : reconnecte-toi dans Réglages.');
   }
 }
 

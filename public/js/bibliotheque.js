@@ -12,7 +12,7 @@ const TOUTE_L_ANNEE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 // --- Liste ---
 
-export async function liste(afficherSauvegarde) {
+export async function liste() {
   const recettes = trierParNom(await db.tout('recettes'));
   const resultats = el('div');
 
@@ -40,7 +40,6 @@ export async function liste(afficherSauvegarde) {
         oninput: (e) => { recherche = e.target.value; remplir(); },
       })) : null,
     resultats,
-    ...afficherSauvegarde(),
   ];
 }
 
