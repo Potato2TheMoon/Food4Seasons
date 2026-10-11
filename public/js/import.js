@@ -8,7 +8,7 @@ const nombre = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : typeof 
 export function lireRecetteCollee(texte, catalogue) {
   const debut = texte.indexOf('{');
   const fin = texte.lastIndexOf('}');
-  if (debut < 0 || fin < debut) throw new Error('Aucune recette trouvée : colle le bloc rendu par le skill Food4Seasons.');
+  if (debut < 0 || fin < debut) throw new Error('Aucune recette trouvée : ce texte n’a pas le bloc « pour le site ». Demande au skill Food4Seasons la recette « pour le site », puis copie le bloc de code.');
   let donnees;
   try {
     donnees = JSON.parse(texte.slice(debut, fin + 1));
