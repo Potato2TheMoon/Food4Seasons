@@ -111,6 +111,17 @@ export async function fiche(id) {
   const mois = new Date().getMonth() + 1;
   const hors = horsSaison(recette, catalogue, mois);
 
+  // Commentaires de toutes les semaines où la recette a été cuisinée, le plus récent en premier (02).
+  const commentaires = (await db.tout('semaines'))
+    .flatMap((semaine) => semaine.recettes
+      .filter((p) => p.recette === id && p.commentaire)
+      .map((p) => ({ date: semaine.id, texte: p.commentaire })))
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const dateCommentaire = (iso) => {
+    const [a, m, j] = iso.split('-').map(Number);
+    return new Date(a, m - 1, j).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
   const mentions = [
     hors.length
       ? mention('feuille', `Hors saison en ${MOIS[mois - 1]} : ${hors.join(', ')}`)
@@ -136,6 +147,12 @@ export async function fiche(id) {
       ? groupe(recette.lignes.map((l) => el('div', { class: 'ligne' }, l.ingredient,
         el('span', { class: 'secondaire' }, formaterQuantite(l.quantite, l.unite)))))
       : vide('Aucun ingrédient', ''),
+
+    commentaires.length ? [
+      el('div', { class: 'entete-groupe' }, 'Commentaires'),
+      groupe(commentaires.map((c) => el('div', { class: 'ligne commentaire-fiche' },
+        el('span', { class: 'ligne-texte' }, el('span', { class: 'commentaire-date' }, dateCommentaire(c.date)), c.texte)))),
+    ] : null,
 
     el('div', { class: 'entete-groupe' }, 'Étapes'),
     recette.etapes.length

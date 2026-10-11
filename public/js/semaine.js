@@ -107,6 +107,16 @@ export async function semaine(quelle, rafraichir) {
         ? el('div', { class: 'ligne' }, 'Portions congelées',
           compteur(prevue.congelees ?? 0, 0, 'portion congelée', (delta) => changerCongelees(prevue, recette, delta)))
         : null,
+      // Commentaire après cuisson, à tout moment (03 décision 6) ; il s'affiche aussi sur la fiche recette.
+      el('div', { class: 'ligne commentaire' },
+        el('textarea', {
+          class: 'champ', rows: '2', placeholder: 'Commentaire après cuisson', 'aria-label': `Commentaire sur ${recette.nom}`,
+          onchange: async (e) => {
+            prevue.commentaire = e.target.value.trim();
+            await db.enregistrer('semaines', donnees);
+            message('Commentaire enregistré.');
+          },
+        }, prevue.commentaire ?? '')),
       el('div', { class: 'ligne' }, el('button', {
         class: 'action danger', type: 'button',
         onclick: () => {
@@ -156,6 +166,8 @@ export async function choix(id) {
   const mois = moisDe(id);
   const toutes = trierParNom(await db.tout('recettes')).filter((r) => !dejaPrevues.has(r.id));
   const avecSaison = toutes.map((r) => ({ recette: r, hors: horsSaison(r, catalogue, mois) }));
+  // Bonus 7 (04 décision 6) : une recette déjà au congélateur le signale et reste à sa place.
+  const auCongelateur = new Set((await db.tout('congelateur')).filter((e) => e.portions > 0).map((e) => e.recette));
   const affichees = touteLaBibliotheque ? avecSaison : avecSaison.filter((r) => !r.hors.length);
 
   async function choisir(recette) {
@@ -181,7 +193,8 @@ export async function choix(id) {
         el('span', { class: 'ligne-texte' }, recette.nom,
           el('span', { class: 'mentions' },
             hors.length ? mention('feuille', `Hors saison : ${hors.join(', ')}`) : null,
-            !tientJusquauMercredi(recette) ? mention('triangle', 'Ne tient pas jusqu’au mercredi') : null)),
+            !tientJusquauMercredi(recette) ? mention('triangle', 'Ne tient pas jusqu’au mercredi') : null,
+            auCongelateur.has(recette.id) ? mention('flocon', 'Déjà au congélateur') : null)),
         svg(ICONES.plus, 'icone ajout'))));
   }
 

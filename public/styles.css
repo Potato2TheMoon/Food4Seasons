@@ -261,3 +261,7 @@ a.bouton-principal { text-align: center; text-decoration: none; }
 .pied-groupe.intro { margin: 0 4px 12px; font-size: 15px; }
 button.bouton-secondaire { width: 100%; border: 0; font: inherit; font-weight: 600; cursor: pointer; }
 .intro + .bouton-principal { margin: 0 0 16px; }
+
+/* --- Étape G : bonus --- */
+.ligne.commentaire textarea { font-size: 15px; }
+.commentaire-date { display: block; font-size: 13px; color: var(--texte-2); margin-bottom: 2px; }
