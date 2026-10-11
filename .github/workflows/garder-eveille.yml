@@ -1,0 +1,19 @@
+# Garde la base Supabase éveillée : l'offre gratuite met en pause un projet resté 7 jours sans activité.
+name: Garder la base éveillée
+
+on:
+  schedule:
+    - cron: '17 6 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  appel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Interroger la base
+        run: |
+          URL=$(sed -n "s/^export const SUPABASE_URL = '\(.*\)';/\1/p" public/js/config.js)
+          CLE=$(sed -n "s/^export const SUPABASE_CLE = '\(.*\)';/\1/p" public/js/config.js)
+          if [ -z "$URL" ] || [ -z "$CLE" ]; then echo "Base pas encore configurée."; exit 0; fi
+          curl -fsS "$URL/rest/v1/elements?select=cle&limit=1" -H "apikey: $CLE" -H "Authorization: Bearer $CLE"

@@ -2,7 +2,7 @@
 // Tout reste sur l'iPhone ; Sauvegarder / Restaurer (01 point 10) passe par un fichier.
 
 const NOM_BASE = 'food4seasons';
-const VERSION_BASE = 1;
+const VERSION_BASE = 2;
 
 // Une table par entité du 02. La liste de courses vit dans sa semaine de cuisine.
 export const TABLES = {
@@ -12,7 +12,17 @@ export const TABLES = {
   congelateur: 'id',    // entrées du congélateur
 };
 
+// Modifications locales pas encore envoyées à la base partagée (synchro, 06) : une ligne par élément.
+const ATTENTE = 'attente';
+const cleAttente = (table, cle) => `${table}\u0001${cle}`;
+
 let ouverture;
+let apresEcriture = () => {};
+
+// La synchro est prévenue de chaque modification locale.
+export function surEcriture(fonction) {
+  apresEcriture = fonction;
+}
 
 export function ouvrir() {
   ouverture ??= new Promise((resoudre, rejeter) => {
@@ -22,6 +32,7 @@ export function ouvrir() {
       for (const [table, cle] of Object.entries(TABLES)) {
         if (!base.objectStoreNames.contains(table)) base.createObjectStore(table, { keyPath: cle });
       }
+      if (!base.objectStoreNames.contains(ATTENTE)) base.createObjectStore(ATTENTE, { keyPath: 'id' });
     };
     requete.onsuccess = () => resoudre(requete.result);
     requete.onerror = () => rejeter(requete.error);
@@ -55,18 +66,89 @@ export async function compter(table) {
   });
 }
 
+function noterAttente(transaction, table, cle) {
+  transaction.objectStore(ATTENTE).put({ id: cleAttente(table, cle), table, cle, quand: Date.now() + Math.random() });
+}
+
 export async function enregistrer(table, elements) {
   const base = await ouvrir();
-  const transaction = base.transaction(table, 'readwrite');
+  const transaction = base.transaction([table, ATTENTE], 'readwrite');
   const magasin = transaction.objectStore(table);
-  for (const element of [].concat(elements)) magasin.put(element);
-  return attendre(transaction);
+  for (const element of [].concat(elements)) {
+    magasin.put(element);
+    noterAttente(transaction, table, element[TABLES[table]]);
+  }
+  await attendre(transaction);
+  apresEcriture();
 }
 
 export async function supprimer(table, cle) {
   const base = await ouvrir();
-  const transaction = base.transaction(table, 'readwrite');
+  const transaction = base.transaction([table, ATTENTE], 'readwrite');
   transaction.objectStore(table).delete(cle);
+  noterAttente(transaction, table, cle);
+  await attendre(transaction);
+  apresEcriture();
+}
+
+// --- Pour la synchro ---
+
+export async function enAttente() {
+  return tout(ATTENTE);
+}
+
+// Les modifications envoyées sortent de l'attente, sauf si elles ont encore changé entre-temps.
+export async function retirerAttente(lignes) {
+  const base = await ouvrir();
+  const transaction = base.transaction(ATTENTE, 'readwrite');
+  const magasin = transaction.objectStore(ATTENTE);
+  for (const ligne of lignes) {
+    const requete = magasin.get(ligne.id);
+    requete.onsuccess = () => { if (requete.result?.quand === ligne.quand) magasin.delete(ligne.id); };
+  }
+  return attendre(transaction);
+}
+
+export async function lire(table, cle) {
+  const base = await ouvrir();
+  return new Promise((resoudre, rejeter) => {
+    const requete = base.transaction(table).objectStore(table).get(cle);
+    requete.onsuccess = () => resoudre(requete.result);
+    requete.onerror = () => rejeter(requete.error);
+  });
+}
+
+// Applique les éléments reçus de la base partagée. Un élément modifié ici et pas encore envoyé garde
+// sa version locale (elle partira au prochain envoi). Rend le nombre d'éléments changés.
+export async function appliquerDistant(lignes) {
+  const base = await ouvrir();
+  const tables = Object.keys(TABLES);
+  const transaction = base.transaction([...tables, ATTENTE], 'readwrite');
+  const attente = transaction.objectStore(ATTENTE);
+  let changes = 0;
+  for (const ligne of lignes) {
+    if (!tables.includes(ligne.table_nom)) continue;
+    const requete = attente.get(cleAttente(ligne.table_nom, ligne.cle));
+    requete.onsuccess = () => {
+      if (requete.result) return;
+      const magasin = transaction.objectStore(ligne.table_nom);
+      if (ligne.supprime || ligne.valeur == null) magasin.delete(ligne.cle);
+      else magasin.put(ligne.valeur);
+      changes += 1;
+    };
+  }
+  await attendre(transaction);
+  return changes;
+}
+
+// À la première connexion d'un appareil, tout ce qu'il contient part vers la base partagée.
+export async function toutMettreEnAttente() {
+  const base = await ouvrir();
+  const tables = Object.keys(TABLES);
+  const cles = {};
+  for (const table of tables) cles[table] = (await tout(table)).map((e) => e[TABLES[table]]);
+  const transaction = base.transaction(ATTENTE, 'readwrite');
+  for (const table of tables) for (const cle of cles[table]) noterAttente(transaction, table, cle);
   return attendre(transaction);
 }
 
@@ -92,11 +174,19 @@ export async function importer(sauvegarde) {
   }
   const base = await ouvrir();
   const tables = Object.keys(TABLES);
-  const transaction = base.transaction(tables, 'readwrite');
+  const anciennes = {};
+  for (const table of tables) anciennes[table] = (await tout(table)).map((e) => e[TABLES[table]]);
+  const transaction = base.transaction([...tables, ATTENTE], 'readwrite');
   for (const table of tables) {
     const magasin = transaction.objectStore(table);
     magasin.clear();
-    for (const element of sauvegarde.donnees[table] ?? []) magasin.put(element);
+    // Les éléments retirés par la restauration sont aussi supprimés de la base partagée.
+    for (const cle of anciennes[table]) noterAttente(transaction, table, cle);
+    for (const element of sauvegarde.donnees[table] ?? []) {
+      magasin.put(element);
+      noterAttente(transaction, table, element[TABLES[table]]);
+    }
   }
-  return attendre(transaction);
+  await attendre(transaction);
+  apresEcriture();
 }

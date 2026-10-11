@@ -4,6 +4,7 @@ import * as bibliotheque from './bibliotheque.js';
 import * as semaine from './semaine.js';
 import * as courses from './courses.js';
 import * as congelateur from './congelateur.js';
+import * as synchro from './synchro.js';
 
 const vue = document.getElementById('vue');
 const champFichier = document.getElementById('fichier-restauration');
@@ -50,17 +51,75 @@ async function rafraichir() {
   window.scrollTo(0, position);
 }
 
+// --- Synchro entre appareils (06, 2026-10-11), en bas de la Bibliothèque ---
+
+function blocSynchro() {
+  if (!synchro.configuree()) return [];
+  const s = synchro.session();
+  if (!s) {
+    const email = el('input', { class: 'champ', type: 'email', autocomplete: 'username', placeholder: 'E-mail', 'aria-label': 'E-mail' });
+    const motDePasse = el('input', { class: 'champ', type: 'password', autocomplete: 'current-password', placeholder: 'Mot de passe', 'aria-label': 'Mot de passe' });
+    const agir = (creer) => async () => {
+      if (!email.value.trim() || motDePasse.value.length < 6) return message('Indique ton e-mail et un mot de passe d’au moins 6 caractères.');
+      try {
+        if (creer && !(await synchro.creerCompte(email.value.trim(), motDePasse.value))) {
+          return message('Compte créé : confirme ton e-mail avec le lien reçu, puis connecte-toi ici.');
+        }
+        if (!creer) await synchro.connecter(email.value.trim(), motDePasse.value);
+        message(synchro.etat.erreur ?? 'Connecté : tes données sont synchronisées.');
+        rafraichir();
+      } catch (erreur) {
+        message(navigator.onLine ? erreur.message : 'Pas de réseau pour se connecter.');
+      }
+    };
+    return [
+      el('div', { class: 'entete-groupe' }, 'Synchronisation'),
+      groupe(
+        el('div', { class: 'ligne' }, email),
+        el('div', { class: 'ligne' }, motDePasse),
+        el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: agir(false) }, 'Se connecter')),
+        el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: agir(true) }, 'Créer le compte')),
+      ),
+      el('p', { class: 'pied-groupe' }, 'Connecte-toi avec le même compte sur l’iPhone et le Mac pour retrouver partout les mêmes données.'),
+    ];
+  }
+  const { derniere, erreur } = synchro.etat;
+  return [
+    el('div', { class: 'entete-groupe' }, 'Synchronisation'),
+    groupe(
+      el('div', { class: 'ligne' }, 'Compte', el('span', { class: 'secondaire' }, s.utilisateur.email)),
+      el('div', { class: 'ligne' }, 'Dernière synchro', el('span', { class: 'secondaire etat-synchro' },
+        erreur ?? (derniere ? derniere.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'en cours…'))),
+      el('div', { class: 'ligne' }, el('button', {
+        class: 'action', type: 'button',
+        onclick: async () => { await synchro.synchroniser(); message(synchro.etat.erreur ?? 'Synchronisé.'); rafraichir(); },
+      }, 'Synchroniser maintenant')),
+      el('div', { class: 'ligne' }, el('button', {
+        class: 'action danger', type: 'button',
+        onclick: () => {
+          if (!confirm('Se déconnecter ? Les données restent sur cet appareil, mais ne sont plus synchronisées.')) return;
+          synchro.deconnecter();
+          rafraichir();
+        },
+      }, 'Se déconnecter')),
+    ),
+  ];
+}
+
 // --- Sauvegarder / Restaurer (01 point 10), en bas de la Bibliothèque ---
 
 function blocSauvegarde() {
   return [
+    ...blocSynchro(),
     el('div', { class: 'entete-groupe' }, 'Sauvegarde'),
     groupe(
       el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: sauvegarder }, 'Sauvegarder dans un fichier')),
       el('div', { class: 'ligne' }, el('button', { class: 'action', type: 'button', onclick: () => champFichier.click() }, 'Restaurer depuis un fichier')),
     ),
     el('p', { class: 'pied-groupe' },
-      'Toutes tes données restent sur cet appareil. Sauvegarde-les régulièrement, par exemple dans iCloud Drive.'),
+      synchro.session()
+        ? 'Une copie dans un fichier reste utile en cas de souci, par exemple dans iCloud Drive.'
+        : 'Toutes tes données restent sur cet appareil. Sauvegarde-les régulièrement, par exemple dans iCloud Drive.'),
   ];
 }
 
@@ -111,7 +170,19 @@ async function demarrer() {
     // Hors ligne : on garde le catalogue déjà enregistré.
   }
   window.addEventListener('hashchange', afficher);
-  afficher();
+  await afficher();
+  synchro.demarrer({
+    // Données reçues d'un autre appareil : on redessine, sauf pendant une saisie.
+    apresReception: () => {
+      const saisie = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+      if (route().nom !== 'edition' && !saisie) rafraichir();
+    },
+    apresEtat: () => {
+      const etat = document.querySelector('.etat-synchro');
+      if (etat) etat.textContent = synchro.etat.erreur
+        ?? synchro.etat.derniere?.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) ?? '';
+    },
+  });
 }
 
 demarrer();
