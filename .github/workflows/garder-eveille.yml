@@ -1,9 +1,11 @@
 # Garde la base Supabase éveillée : l'offre gratuite met en pause un projet resté 7 jours sans activité.
+# Une simple lecture anonyme n'a pas suffi (pause le 2026-10-19 malgré les appels des 13 et 16) :
+# on écrit désormais l'heure en base par la fonction garder_eveille (supabase/schema.sql), tous les deux jours.
 name: Garder la base éveillée
 
 on:
   schedule:
-    - cron: '17 6 */3 * *'
+    - cron: '17 6 */2 * *'
   workflow_dispatch:
 
 jobs:
@@ -11,9 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Interroger la base
+      - name: Écrire en base
         run: |
           URL=$(sed -n "s/^export const SUPABASE_URL = '\(.*\)';/\1/p" public/js/config.js)
           CLE=$(sed -n "s/^export const SUPABASE_CLE = '\(.*\)';/\1/p" public/js/config.js)
           if [ -z "$URL" ] || [ -z "$CLE" ]; then echo "Base pas encore configurée."; exit 0; fi
+          CODE=$(curl -sS -o reponse.txt -w '%{http_code}' -X POST "$URL/rest/v1/rpc/garder_eveille" \
+            -H "apikey: $CLE" -H "Content-Type: application/json" -d '{}')
+          cat reponse.txt; echo
+          if [ "$CODE" = "200" ]; then exit 0; fi
+          # Fonction pas encore créée dans Supabase : on garde l'ancienne lecture en attendant.
+          echo "Fonction garder_eveille absente (code $CODE) : colle la fin de supabase/schema.sql dans Supabase > SQL Editor."
           curl -fsS "$URL/rest/v1/elements?select=cle&limit=1" -H "apikey: $CLE"

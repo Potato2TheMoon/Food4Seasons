@@ -1,13 +1,23 @@
-// Onglet Bibliothèque (04 décisions 12, 13, 14, 19) : liste, fiche recette et brouillon à relire.
+// Onglet Bibliothèque (04 décisions 12, 13, 14, 19, 22, 23) : liste, fiche recette et brouillon à relire.
 import * as db from './db.js';
 import { el, svg, ICONES, message, groupe, vide, barre, vignette, mention } from './ui.js';
 import {
-  UNITES, MOIS, trierParNom, chercher, horsSaison, tientJusquauMercredi,
-  seCongele, formaterQuantite, aVerifier, nouvelId,
+  UNITES, MOIS, trierParNom, chercher, horsSaison, avertirMercredi,
+  seCongele, formaterQuantite, aVerifier, nouvelId, categorie, infosCategorie, CATEGORIES_RECETTE,
 } from './recettes.js';
 import { lireRecetteCollee } from './import.js';
 
 let recherche = '';
+let filtre = 'toutes'; // Toutes, Batch, Minute ou Dessert
+
+// Depuis le widget de saison : la bibliothèque s'ouvre sur les recettes qui contiennent cet ingrédient (04 décision 23).
+export function rechercherIngredient(nom) {
+  recherche = nom;
+  filtre = 'toutes';
+  location.hash = '#bibliotheque';
+}
+
+const mentionCategorie = (recette) => mention(infosCategorie(recette).icone, infosCategorie(recette).mention);
 const TOUTE_L_ANNEE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 // --- Liste ---
@@ -15,17 +25,25 @@ const TOUTE_L_ANNEE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 export async function liste() {
   const recettes = trierParNom(await db.tout('recettes'));
   const resultats = el('div');
+  const filtres = el('div', { class: 'segments large' },
+    [{ id: 'toutes', libelle: 'Toutes' }, ...CATEGORIES_RECETTE].map((c) =>
+      el('button', { class: 'segment', type: 'button', 'data-filtre': c.id, onclick: () => { filtre = c.id; remplir(); } }, c.libelle)));
 
   function remplir() {
-    const trouvees = chercher(recettes, recherche);
+    const trouvees = chercher(recettes, recherche).filter((r) => filtre === 'toutes' || categorie(r) === filtre);
+    filtres.querySelectorAll('.segment').forEach((b) => b.classList.toggle('actif', b.dataset.filtre === filtre));
     resultats.replaceChildren(
       !recettes.length
         ? vide('Aucune recette', 'Ajoute ta première recette avec le bouton +.')
         : !trouvees.length
-          ? vide('Aucun résultat', `Aucune recette ni ingrédient ne correspond à « ${recherche} ».`)
+          ? vide('Aucun résultat', recherche
+            ? `Aucune recette${filtre === 'toutes' ? '' : ' de cette catégorie'} ne correspond à « ${recherche} ».`
+            : 'Aucune recette dans cette catégorie.')
           : groupe(trouvees.map((r) =>
             el('a', { class: 'ligne lien', href: `#recette/${r.id}` },
-              vignette(r), el('span', { class: 'ligne-texte' }, r.nom), svg(ICONES.chevron, 'icone chevron')))),
+              vignette(r),
+              el('span', { class: 'ligne-texte' }, r.nom, el('span', { class: 'mentions' }, mentionCategorie(r))),
+              svg(ICONES.chevron, 'icone chevron')))),
     );
   }
   remplir();
@@ -39,6 +57,7 @@ export async function liste() {
         type: 'search', placeholder: 'Recette ou ingrédient', value: recherche, 'aria-label': 'Rechercher',
         oninput: (e) => { recherche = e.target.value; remplir(); },
       })) : null,
+    recettes.length ? filtres : null,
     resultats,
   ];
 }
@@ -123,10 +142,11 @@ export async function fiche(id) {
   };
 
   const mentions = [
+    mentionCategorie(recette),
     hors.length
       ? mention('feuille', `Hors saison en ${MOIS[mois - 1]} : ${hors.join(', ')}`)
       : mention('feuille', `De saison en ${MOIS[mois - 1]}`),
-    !tientJusquauMercredi(recette) ? mention('triangle', 'Ne tient pas jusqu’au mercredi') : null,
+    avertirMercredi(recette) ? mention('triangle', 'Ne tient pas jusqu’au mercredi') : null,
   ];
 
   return [
@@ -135,8 +155,8 @@ export async function fiche(id) {
     el('h1', { class: 'titre-fiche' }, recette.nom),
     el('div', { class: 'mentions' }, mentions),
 
-    el('div', { class: 'entete-groupe' }, 'Conservation'),
-    groupe(
+    categorie(recette) === 'minute' ? null : el('div', { class: 'entete-groupe' }, 'Conservation'),
+    categorie(recette) === 'minute' ? null : groupe(
       el('div', { class: 'ligne' }, 'Frigo', el('span', { class: 'secondaire' }, recette.frigoJours == null ? 'non renseigné' : `${recette.frigoJours} jours`)),
       el('div', { class: 'ligne' }, 'Congélateur', el('span', { class: 'secondaire' },
         recette.congelMois === undefined ? 'non renseigné' : seCongele(recette) ? `${recette.congelMois} mois` : 'ne se congèle pas')),
@@ -167,7 +187,7 @@ export async function fiche(id) {
 let brouillon = null;
 
 function recetteVide() {
-  return { id: null, nom: '', portions: 4, image: null, frigoJours: null, congelMois: undefined, lignes: [], etapes: [''] };
+  return { id: null, categorie: 'batch', nom: '', portions: 4, image: null, frigoJours: null, congelMois: undefined, lignes: [], etapes: [''] };
 }
 
 export async function edition(id, rafraichir) {
@@ -303,13 +323,18 @@ export async function edition(id, rafraichir) {
     groupe(
       el('label', { class: 'ligne' }, 'Nom', aCompleter(!recette.nom.trim()),
         champ({ class: 'champ droite', value: recette.nom, placeholder: 'Nom de la recette', oninput: (e) => { recette.nom = e.target.value; } })),
+      el('div', { class: 'ligne' }, 'Catégorie',
+        el('div', { class: 'segments droite' }, CATEGORIES_RECETTE.map((c) =>
+          el('button', { type: 'button', class: categorie(recette) === c.id ? 'segment actif' : 'segment',
+            onclick: () => { recette.categorie = c.id; rafraichir(); } }, c.libelle)))),
       el('label', { class: 'ligne' }, "Portions d'origine",
         champ({ type: 'number', inputmode: 'numeric', min: '1', class: 'champ droite court', value: recette.portions ?? '',
           oninput: (e) => { recette.portions = e.target.value === '' ? null : Number(e.target.value); } })),
     ),
 
-    el('div', { class: 'entete-groupe' }, 'Conservation'),
-    groupe(
+    // Une recette minute se mange le jour même : pas de conservation à saisir.
+    categorie(recette) === 'minute' ? null : el('div', { class: 'entete-groupe' }, 'Conservation'),
+    categorie(recette) === 'minute' ? null : groupe(
       el('label', { class: 'ligne' }, 'Jours au frigo', aCompleter(recette.frigoJours == null),
         champ({ type: 'number', inputmode: 'numeric', min: '0', class: 'champ droite court', value: recette.frigoJours ?? '',
           onchange: (e) => { recette.frigoJours = e.target.value === '' ? null : Number(e.target.value); rafraichir(); } })),
@@ -322,7 +347,7 @@ export async function edition(id, rafraichir) {
         champ({ type: 'number', inputmode: 'numeric', min: '1', class: 'champ droite court', value: recette.congelMois,
           oninput: (e) => { recette.congelMois = Math.max(1, Number(e.target.value) || 1); } })) : null,
     ),
-    recette.frigoJours != null && !tientJusquauMercredi(recette)
+    recette.frigoJours != null && avertirMercredi(recette)
       ? el('p', { class: 'pied-groupe' }, mention('triangle', 'Ne tient pas jusqu’au mercredi')) : null,
 
     el('div', { class: 'entete-groupe' }, 'Ingrédients'),

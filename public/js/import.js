@@ -48,6 +48,8 @@ export function lireRecetteCollee(texte, catalogue) {
   return {
     recette: {
       id: null,
+      // Catégorie proposée par le skill (02 décision 22) ; Batch si elle manque.
+      categorie: ['batch', 'minute', 'dessert'].includes(donnees.categorie) ? donnees.categorie : 'batch',
       nom: String(donnees.nom ?? '').trim(),
       portions: portions && portions > 0 ? Math.round(portions) : null,
       image: typeof donnees.image === 'string' && /^https:\/\//.test(donnees.image) ? donnees.image : null,

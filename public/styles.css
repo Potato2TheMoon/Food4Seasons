@@ -270,3 +270,28 @@ button.bouton-secondaire { width: 100%; border: 0; font: inherit; font-weight: 6
 /* --- Étape G : bonus --- */
 .ligne.commentaire textarea { font-size: 15px; }
 .commentaire-date { display: block; font-size: 13px; color: var(--texte-2); margin-bottom: 2px; }
+
+/* --- Widget de saison sur l'écran Semaine (04 décision 23, 05 décision 9) --- */
+.saison { margin: 28px 0 0; padding: 16px 8px 12px; background: var(--bloc); border-radius: 18px; }
+.saison-titre { margin: 0 0 12px; font-size: 15px; font-weight: 700; letter-spacing: 0.4px; text-align: center; text-transform: uppercase; }
+.saison-grille { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px 2px; }
+.saison-case {
+  width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; padding: 2px 0;
+  font: inherit; color: inherit; background: none; border: 0; border-radius: 10px; cursor: pointer;
+}
+.saison-case:active { background: var(--champ-fond); }
+.saison-icone { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+.saison-icone svg { width: 100%; height: 100%; }
+.saison-pastille {
+  width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 19px; font-weight: 700;
+}
+.saison-nom {
+  display: block; width: 100%; text-align: center; font-size: 12px; color: var(--texte-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.saison-separation { border: 0; border-top: 0.5px solid var(--separateur); margin: 14px 8px; }
+.saison-plus {
+  display: block; margin: 12px auto 0; padding: 6px 14px; border: 0; border-radius: 16px;
+  font: inherit; font-size: 15px; font-weight: 600; color: var(--accent); background: var(--accent-clair); cursor: pointer;
+}

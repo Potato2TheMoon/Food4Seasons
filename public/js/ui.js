@@ -31,6 +31,8 @@ export const ICONES = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   loupe: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>',
   croix: '<path d="M6 6l12 12M18 6 6 18"/>',
+  casserole: '<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6zM2 10h2M20 10h2M9 10V8.5a3 3 0 0 1 6 0V10M12 3v2"/>',
+  gateau: '<path d="M4 20h16v-7H4v7zM4 16c2 1.3 4 1.3 6 0s4-1.3 6 0 3 1 4 .5M8 13v-2M12 13v-2M16 13v-2M8 8.5v.5M12 8.5v.5M16 8.5v.5"/>',
   horloge: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   cercle: '<circle cx="12" cy="12" r="9"/>',
   coche: '<circle cx="12" cy="12" r="9" class="plein"/><path d="m7.8 12.3 2.8 2.8 5.6-5.8" class="trait"/>',

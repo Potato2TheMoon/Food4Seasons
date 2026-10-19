@@ -33,3 +33,22 @@ create policy "chacun ses donnees" on public.elements
   for all to authenticated
   using (proprietaire = auth.uid())
   with check (proprietaire = auth.uid());
+
+-- Maintien en éveil (ajouté le 2026-10-19) : l'offre gratuite met la base en pause après 7 jours sans activité,
+-- et une simple lecture anonyme ne suffisait pas. Le workflow GitHub appelle cette fonction, qui écrit l'heure
+-- dans une petite table : une vraie écriture, sans donnée personnelle.
+create table if not exists public.eveil (
+  id int primary key default 1 check (id = 1),
+  le timestamptz not null default now()
+);
+alter table public.eveil enable row level security;
+
+create or replace function public.garder_eveille() returns timestamptz
+language sql security definer set search_path = public as $$
+  insert into public.eveil (id, le) values (1, now())
+  on conflict (id) do update set le = excluded.le
+  returning le;
+$$;
+
+revoke all on function public.garder_eveille() from public;
+grant execute on function public.garder_eveille() to anon, authenticated;
