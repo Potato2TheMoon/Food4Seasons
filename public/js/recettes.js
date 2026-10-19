@@ -4,6 +4,21 @@ export const UNITES = ['g', 'kg', 'ml', 'l', 'pièce', 'c. à soupe', 'c. à caf
 export const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 export const CATEGORIES_DE_SAISON = ['legume', 'fruit', 'herbe'];
 
+// Catégorie de la recette (02 décision 22). Une recette sans catégorie, enregistrée avant, est une recette batch.
+export const CATEGORIES_RECETTE = [
+  { id: 'batch', libelle: 'Batch', mention: 'Batch cooking', icone: 'casserole' },
+  { id: 'minute', libelle: 'Minute', mention: 'Recette minute', icone: 'horloge' },
+  { id: 'dessert', libelle: 'Dessert', mention: 'Dessert', icone: 'gateau' },
+];
+
+export function categorie(recette) {
+  return CATEGORIES_RECETTE.some((c) => c.id === recette?.categorie) ? recette.categorie : 'batch';
+}
+
+export function infosCategorie(recette) {
+  return CATEGORIES_RECETTE.find((c) => c.id === categorie(recette));
+}
+
 // Pour chercher sans tenir compte des accents ni des majuscules.
 export function normaliser(texte) {
   return (texte ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
@@ -37,6 +52,11 @@ export function tientJusquauMercredi(recette) {
   return recette.frigoJours == null || recette.frigoJours >= 3;
 }
 
+// L'avertissement « ne tient pas jusqu'au mercredi » ne concerne que les recettes batch (04 décision 22).
+export function avertirMercredi(recette) {
+  return categorie(recette) === 'batch' && !tientJusquauMercredi(recette);
+}
+
 export function seCongele(recette) {
   return recette.congelMois != null && recette.congelMois > 0;
 }
@@ -61,8 +81,11 @@ export function aVerifier(recette, catalogue) {
   const manques = [];
   if (!recette.nom?.trim()) manques.push('le nom');
   if (!recette.portions) manques.push("le nombre de portions d'origine");
-  if (recette.frigoJours == null) manques.push('les jours au frigo');
-  if (recette.congelMois === undefined) manques.push('la congélation');
+  // Une recette minute se mange le jour même : sa conservation n'est pas demandée.
+  if (categorie(recette) !== 'minute') {
+    if (recette.frigoJours == null) manques.push('les jours au frigo');
+    if (recette.congelMois === undefined) manques.push('la congélation');
+  }
   if (!recette.lignes.length) manques.push('les ingrédients');
   if (!recette.etapes.some((e) => e.trim())) manques.push('les étapes');
   const nouveaux = recette.lignes.map((l) => l.ingredient).filter((n) => n && !connus.has(n));

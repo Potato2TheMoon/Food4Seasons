@@ -1,10 +1,13 @@
-// Onglet Semaine (04 décisions 1, 2, 4, 5, 17, 18) : la semaine de cuisine et l'écran de choix des recettes.
+// Onglet Semaine (04 décisions 1, 2, 4, 5, 17, 18, 22, 23) : la semaine de cuisine et l'écran de choix des recettes.
 import * as db from './db.js';
 import { el, svg, ICONES, message, groupe, vide, barre, vignette, mention } from './ui.js';
-import { MOIS, trierParNom, horsSaison, tientJusquauMercredi, seCongele } from './recettes.js';
+import { MOIS, trierParNom, horsSaison, avertirMercredi, seCongele, categorie, infosCategorie, CATEGORIES_RECETTE } from './recettes.js';
+import { widgetSaison } from './saison.js';
+import { rechercherIngredient } from './bibliotheque.js';
 
 const PORTIONS_PAR_DEFAUT = 4;
 let touteLaBibliotheque = false;
+let categorieChoix = 'batch'; // le sélecteur de l'écran de choix part sur Batch (04 décision 22)
 
 // --- Dates : une semaine de cuisine est repérée par son dimanche (AAAA-MM-JJ) ---
 
@@ -98,7 +101,9 @@ export async function semaine(quelle, rafraichir) {
       el('a', { class: 'ligne lien', href: `#recette/${recette.id}` },
         vignette(recette),
         el('span', { class: 'ligne-texte' }, recette.nom,
-          !tientJusquauMercredi(recette) ? el('span', { class: 'mentions' }, mention('triangle', 'Ne tient pas jusqu’au mercredi')) : null),
+          el('span', { class: 'mentions' },
+            categorie(recette) !== 'batch' ? mention(infosCategorie(recette).icone, infosCategorie(recette).mention) : null,
+            avertirMercredi(recette) ? mention('triangle', 'Ne tient pas jusqu’au mercredi') : null)),
         svg(ICONES.chevron, 'icone chevron')),
       el('div', { class: 'ligne' }, 'Portions',
         compteur(prevue.portions, 1, 'portion', (delta) => { prevue.portions += delta; enregistrer(); })),
@@ -128,6 +133,9 @@ export async function semaine(quelle, rafraichir) {
     );
   }
 
+  // Widget de saison sous la semaine à venir, pour le mois du dimanche de cuisine (04 décision 23).
+  const saison = precedente ? null : widgetSaison(await db.tout('ingredients'), moisDe(id), rechercherIngredient);
+
   return [
     el('h1', {}, 'Semaine'),
     el('div', { class: 'segments large' },
@@ -152,6 +160,7 @@ export async function semaine(quelle, rafraichir) {
           : 'Choisis ce que tu cuisines dimanche.'),
         el('a', { class: 'bouton-principal', href: `#choix/${id}` }, 'Choisir une recette'),
       ],
+    saison,
   ];
 }
 
@@ -168,13 +177,16 @@ export async function choix(id) {
   const avecSaison = toutes.map((r) => ({ recette: r, hors: horsSaison(r, catalogue, mois) }));
   // Bonus 7 (04 décision 6) : une recette déjà au congélateur le signale et reste à sa place.
   const auCongelateur = new Set((await db.tout('congelateur')).filter((e) => e.portions > 0).map((e) => e.recette));
-  const affichees = touteLaBibliotheque ? avecSaison : avecSaison.filter((r) => !r.hors.length);
+  const deLaCategorie = avecSaison.filter((r) => categorie(r.recette) === categorieChoix);
+  const affichees = touteLaBibliotheque ? deLaCategorie : deLaCategorie.filter((r) => !r.hors.length);
+  const nomCategorie = { batch: 'batch', minute: 'minute', dessert: 'de dessert' }[categorieChoix];
 
   async function choisir(recette) {
     donnees.recettes.push({ recette: recette.id, portions: PORTIONS_PAR_DEFAUT });
     await db.enregistrer('semaines', donnees);
     message(`${recette.nom} : ${PORTIONS_PAR_DEFAUT} portions, modifiable sur la semaine.`);
     touteLaBibliotheque = false;
+    categorieChoix = 'batch';
     location.hash = retour;
   }
 
@@ -184,8 +196,10 @@ export async function choix(id) {
       ? vide('Tout est déjà prévu', 'Toutes les recettes de la bibliothèque sont dans cette semaine.')
       : [vide('Bibliothèque vide', 'Ajoute d’abord une recette dans la Bibliothèque.'),
         el('a', { class: 'bouton-principal', href: '#ajout' }, 'Ajouter une recette')];
+  } else if (!deLaCategorie.length) {
+    contenu = vide(`Aucune recette ${nomCategorie}`, `Ajoute une recette ${nomCategorie} dans la Bibliothèque, ou choisis une autre catégorie.`);
   } else if (!affichees.length) {
-    contenu = vide(`Aucune recette de saison en ${MOIS[mois - 1]}`, 'Regarde dans toute la bibliothèque pour refaire une recette hors saison.');
+    contenu = vide(`Aucune recette ${nomCategorie} de saison en ${MOIS[mois - 1]}`, 'Regarde dans toute la bibliothèque pour refaire une recette hors saison.');
   } else {
     contenu = groupe(affichees.map(({ recette, hors }) =>
       el('button', { class: 'ligne lien choix', type: 'button', onclick: () => choisir(recette) },
@@ -193,7 +207,7 @@ export async function choix(id) {
         el('span', { class: 'ligne-texte' }, recette.nom,
           el('span', { class: 'mentions' },
             hors.length ? mention('feuille', `Hors saison : ${hors.join(', ')}`) : null,
-            !tientJusquauMercredi(recette) ? mention('triangle', 'Ne tient pas jusqu’au mercredi') : null,
+            avertirMercredi(recette) ? mention('triangle', 'Ne tient pas jusqu’au mercredi') : null,
             auCongelateur.has(recette.id) ? mention('flocon', 'Déjà au congélateur') : null)),
         svg(ICONES.plus, 'icone ajout'))));
   }
@@ -206,6 +220,9 @@ export async function choix(id) {
         onclick: () => { touteLaBibliotheque = false; dispatchEvent(new HashChangeEvent('hashchange')); } }, 'De saison'),
       el('button', { class: touteLaBibliotheque ? 'segment actif' : 'segment', type: 'button',
         onclick: () => { touteLaBibliotheque = true; dispatchEvent(new HashChangeEvent('hashchange')); } }, 'Toute la bibliothèque')),
+    el('div', { class: 'segments large' }, CATEGORIES_RECETTE.map((c) =>
+      el('button', { class: categorieChoix === c.id ? 'segment actif' : 'segment', type: 'button',
+        onclick: () => { categorieChoix = c.id; dispatchEvent(new HashChangeEvent('hashchange')); } }, c.libelle))),
     el('p', { class: 'sous-titre' }, `Saison : ${MOIS[mois - 1]}, cuisine du ${dateLongue(id)}`),
     contenu,
   ];
@@ -213,4 +230,5 @@ export async function choix(id) {
 
 export function quitterChoix() {
   touteLaBibliotheque = false;
+  categorieChoix = 'batch';
 }
