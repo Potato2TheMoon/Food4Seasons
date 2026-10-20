@@ -160,6 +160,22 @@ champFichier.addEventListener('change', async () => {
   }
 });
 
+// --- Barre du bas au-dessus du clavier (04 décision 24) ---
+// Sur iPhone, le clavier recouvre le bas de la page : on mesure la place qu'il prend
+// pour que la barre de recherche ou les boutons du bas restent visibles juste au-dessus.
+function suivreClavier() {
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const mettreAJour = () => {
+    const clavier = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    document.documentElement.style.setProperty('--clavier', `${Math.round(clavier)}px`);
+    document.body.classList.toggle('clavier-ouvert', clavier > 80);
+  };
+  vv.addEventListener('resize', mettreAJour);
+  vv.addEventListener('scroll', mettreAJour);
+  mettreAJour();
+}
+
 // --- Démarrage ---
 
 addEventListener('food4seasons-bloque', () => {
@@ -207,6 +223,7 @@ async function demarrer() {
   } catch {
     // Hors ligne : on garde le catalogue déjà enregistré.
   }
+  suivreClavier();
   window.addEventListener('hashchange', afficher);
   await afficher();
   verifierVersion();

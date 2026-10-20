@@ -68,6 +68,14 @@ export function barre({ retour, titreRetour, action, titreAction, actionPrincipa
   );
 }
 
+// Barre en bas de l'écran, juste au-dessus des onglets, pour les actions à portée du pouce (04 décision 24).
+// Elle reste collée en bas quand la page défile, et remonte au-dessus du clavier.
+export function barreBas(options, ...enfants) {
+  if (options instanceof Node || options == null) return barreBas({}, options, ...enfants);
+  const classes = ['barre-bas', options.pied ? 'pied' : '', options.boutons ? 'boutons' : ''].filter(Boolean).join(' ');
+  return el('div', { class: classes }, ...enfants);
+}
+
 // Vignette carrée devant le nom (05 décision 7) : l'image, ou un carré potiron clair avec des couverts.
 export function vignette(recette, classe = 'vignette') {
   if (recette?.image) return el('img', { class: classe, src: recette.image, alt: '' });
