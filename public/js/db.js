@@ -161,11 +161,18 @@ export async function toutMettreEnAttente() {
 
 // Ajoute au catalogue les ingrédients livrés avec le site qui n'y sont pas encore,
 // sans écraser les corrections déjà faites (lieu d'achat, 02 décision 5).
+// Les mois de saison suivent toujours le catalogue livré (calendrier ADEME, 02 décision 23) :
+// l'app ne permet pas de les modifier pour un ingrédient livré.
 export async function completerCatalogue(catalogue) {
-  const connus = new Set((await tout('ingredients')).map((i) => i.nom));
-  const nouveaux = catalogue.filter((i) => !connus.has(i.nom));
-  if (nouveaux.length) await enregistrer('ingredients', nouveaux);
-  return nouveaux.length;
+  const connus = new Map((await tout('ingredients')).map((i) => [i.nom, i]));
+  const changes = catalogue.flatMap((livre) => {
+    const local = connus.get(livre.nom);
+    if (!local) return [livre];
+    const memesMois = JSON.stringify(local.mois ?? []) === JSON.stringify(livre.mois ?? []);
+    return memesMois ? [] : [{ ...local, mois: livre.mois }];
+  });
+  if (changes.length) await enregistrer('ingredients', changes);
+  return changes.length;
 }
 
 export async function exporter() {
