@@ -36,11 +36,23 @@ test('la catégorie collée depuis le skill est reprise, Batch par défaut', () 
 test('le widget montre les fruits et légumes du mois, sans ceux de toute l’année', () => {
   const { fruits, legumes } = fruitsEtLegumesDuMois(catalogue, 10);
   assert.ok(fruits.includes('Coing') && legumes.includes('Poireau'));
-  assert.ok(!legumes.includes('Carotte') && !fruits.includes('Pomme'));
+  assert.ok(!legumes.includes('Oignon') && !legumes.includes('Ail'));
   assert.ok(!fruits.includes('Fraise'));
 });
 
 test('chaque fruit et légume du catalogue a son icône', () => {
   const manquants = catalogue.filter((i) => ['fruit', 'legume'].includes(i.categorie) && !ICONES_SAISON[i.nom]).map((i) => i.nom);
   assert.deepEqual(manquants, []);
+});
+
+test('le calendrier suit l’ADEME, bases de cuisine toute l’année (02 décision 23)', () => {
+  const mois = (nom) => catalogue.find((i) => i.nom === nom)?.mois;
+  for (const nom of ['Oignon', 'Oignon rouge', 'Ail', 'Échalote', 'Pomme de terre', 'Champignon de Paris', 'Citron', 'Citron vert']) {
+    assert.equal(mois(nom).length, 12, nom);
+  }
+  assert.deepEqual(mois('Carotte'), [1, 2, 3, 9, 10, 11, 12]);
+  assert.deepEqual(mois('Kaki'), [1, 10, 11, 12]);
+  const { fruits, legumes } = fruitsEtLegumesDuMois(catalogue, 10);
+  assert.ok(fruits.includes('Kaki') && fruits.includes('Pomme') && legumes.includes('Carotte'));
+  assert.ok(!legumes.includes('Oignon'));
 });

@@ -18,6 +18,10 @@ const courge = (c1,c2,c3,tige='#6B5A2B') => `<path d="M32 18c-14-4-24 4-24 18 0 
 <path d="M32 19c0-5 1-8 4-10" stroke="${tige}" stroke-width="3.5" stroke-linecap="round" fill="none"/>${H('M14 32c0-4 2-8 5-10')}${H('M31 26v14')}`;
 const fruitRond = (c1,c2,extra='') => `<circle cx="32" cy="36" r="18" fill="${c1}"/><path d="M44 23c4 3 6 8 6 13 0 10-8 18-18 18 8-3 13-10 13-18 0-5-1-9-1-13z" fill="${c2}"/>${extra}${H('M20 32c0-4 2-7 5-9')}`;
 
+const grappe = (c1,c2,points) => `<path d="M14 10c8 2 14 6 18 12M32 22c4-6 10-10 18-10" stroke="#5E7A2B" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+<path d="M32 22c-4-8-2-14 4-16 2 6 0 12-4 16z" fill="#4E9A3A"/>
+${points.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="6" fill="${c1}"/><circle cx="${x+1.5}" cy="${y+1.5}" r="4.4" fill="${c2}" opacity=".6"/>${H(`M${x-3} ${y-1}c0-2 1-3 3-3`)}`).join('')}`;
+
 export const ICONES_SAISON = {
 'Châtaigne': `<path d="M32 10c-4 6-18 12-20 26 0 10 9 16 20 16s20-6 20-16C50 22 36 16 32 10z" fill="#8B4A2B"/>
 <path d="M32 10c-2 6-10 12-12 24 4-8 10-14 12-24z" fill="#A65E3A"/>
@@ -197,4 +201,29 @@ ${[[22,28],[30,26],[38,27],[25,36],[33,35],[41,34],[28,44],[36,43]].map(([x,y])=
 'Rhubarbe': `${[[22,'#D8304A'],[32,'#C22040'],[42,'#D8304A']].map(([x,c],i)=>`<path d="M${x} 58c-1-10-1-20 ${i-1} -30" stroke="${c}" stroke-width="6" stroke-linecap="round" fill="none"/>`).join('')}
 <path d="M32 28c-10 0-20-4-22-14 6-6 16-6 22 0 6-6 16-6 22 0-2 10-12 14-22 14z" fill="#4E9A3A"/><path d="M32 28c0-6 0-10 0-14" stroke="#3E7A2E" stroke-width="1.5"/>${H('M21 54c0-8 0-16 1-22')}`,
 'Citron vert': agrume('#7DBA2E','#5E9B1E'),
+'Cassis': grappe('#2E1F3E','#1A1028',[[22,28],[33,29],[44,27],[27,39],[38,39],[32,50]]),
+'Groseille': grappe('#E0303A','#B81E28',[[22,28],[33,29],[44,27],[27,39],[38,39],[32,50]]),
+'Mûre': `<path d="M32 16c0-5 2-8 5-10" stroke="#5E7A2B" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M33 12c5-4 11-3 13 0-4 4-10 4-13 0z" fill="#4E9A3A"/>
+${[[27,22],[37,22],[22,30],[32,29],[42,30],[24,38],[34,37],[44,38],[28,46],[38,46],[33,53]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5.4" fill="#2E1F4A"/><circle cx="${x+1}" cy="${y+1}" r="3.6" fill="#1A1030" opacity=".6"/><circle cx="${x-1.6}" cy="${y-1.6}" r="1" fill="#fff" opacity=".7"/>`).join('')}`,
+'Myrtille': `${[[23,40,13,'#4A5AAE','#36448A'],[42,30,11,'#3E4E9A','#2E3A7A']].map(([x,y,r,c1,c2])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c1}"/><path d="M${x} ${y+r}a${r} ${r} 0 0 0 ${r} -${r}c-2 6-6 10-${r} ${r}z" fill="${c2}"/><path d="M${x-3} ${y-r+4}l1.5 2.5h3l1.5-2.5" stroke="#1E2650" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>${H(`M${x-r+4} ${y}c0-3 1-5 3-7`)}`).join('')}`,
+'Noisette': `<path d="M32 22c-11 0-17 9-17 18 0 8 7 14 17 14s17-6 17-14c0-9-6-18-17-18z" fill="#B8783A"/>
+<path d="M42 26c4 3 7 8 7 14 0 8-7 14-17 14 8-3 12-8 12-15 0-5-1-9-2-13z" fill="#9A6028"/>
+<path d="M15 30c4-10 10-14 17-14s13 4 17 14c-6-3-11-4-17-4s-11 1-17 4z" fill="#D8C090"/>
+<path d="M32 16c-6-4-14-4-20 0 5 3 12 4 20 0zM32 16c6-5 14-6 20-2-5 4-12 5-20 2z" fill="#7DA83A"/>${H('M20 40c0 4 2 7 5 9')}`,
+'Mandarine': agrume('#F57A10','#D86200'),
+'Pamplemousse': `<circle cx="32" cy="35" r="20" fill="#F5C04A"/><path d="M46 21c4 4 6 9 6 14 0 11-9 20-20 20 9-3 16-10 16-20 0-5-1-10-2-14z" fill="#E8A040"/>
+${[[24,30],[30,26],[38,30],[26,42],[34,44],[41,38]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".9" fill="#D89A30"/>`).join('')}<circle cx="32" cy="15.5" r="1.6" fill="#6B8A2B"/>${H('M18 32c0-4 2-8 5-10')}`,
+'Reine-claude': `${[[24,38],[40,36]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="13" fill="#A8C850"/><path d="M${x+8} ${y-10}c3 3 5 6 5 10 0 7-6 13-13 13 5-3 9-7 9-13 0-4-1-7-1-10z" fill="#8AAE3A"/><path d="M${x} ${y-12}c-1 6-1 18 0 24" stroke="#8AAE3A" stroke-width="1.3" fill="none"/>${H(`M${x-8} ${y-2}c0-3 1-5 3-7`)}`).join('')}
+<path d="M24 25c2-8 6-14 10-17M40 23c-1-6-3-11-6-15" stroke="#6B4A2B" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M34 9c5-3 11-2 13 1-4 4-10 3-13-1z" fill="#4E9A3A"/>`,
+'Pastèque': `<path d="M6 26h52c0 15-12 27-26 27S6 41 6 26z" fill="#3E8A3A"/><path d="M9 26h46c0 13-10 23-23 23S9 39 9 26z" fill="#E8F0C0"/>
+<path d="M12 26h40c0 11-9 20-20 20s-20-9-20-20z" fill="#E8404A"/>
+${[[20,31],[28,35],[36,35],[44,31],[24,40],[32,42],[40,40]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="1.2" ry="2" fill="#2A1A1A"/>`).join('')}${H('M16 30c2 5 5 9 9 11')}`,
+'Kaki': `<path d="M32 22c-12 0-20 7-20 17 0 9 9 15 20 15s20-6 20-15c0-10-8-17-20-17z" fill="#F07A20"/>
+<path d="M44 24c5 3 8 9 8 15 0 9-9 15-20 15 9-3 15-8 15-16 0-5-1-10-3-14z" fill="#D86010"/>
+<path d="M32 24c-5-2-11-1-14 2 4 2 9 2 14-2zM32 24c5-2 11-1 14 2-4 2-9 2-14-2zM32 24c-3-4-3-8 0-10 3 2 3 6 0 10z" fill="#4E7A2E"/>
+<path d="M32 15V9" stroke="#6B4A2B" stroke-width="2.5" stroke-linecap="round"/>${H('M17 36c0 4 2 8 5 10')}`,
+'Grenade': `<circle cx="32" cy="36" r="18" fill="#C8303A"/><path d="M44 23c4 3 6 8 6 13 0 10-8 18-18 18 8-3 13-10 13-18 0-5-1-9-1-13z" fill="#A82030"/>
+<path d="M26 18l1-8 3 4 2-5 2 5 3-4 1 8z" fill="#A82030"/>${H('M20 32c0-4 2-7 5-9')}${H('M24 26c1-1 2-2 3-2')}`,
+'Cresson': `${[[32,52,32,22],[32,52,20,26],[32,52,44,26],[32,52,14,38],[32,52,50,38]].map(([x1,y1,x2,y2])=>`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="#4E8A2E" stroke-width="2" stroke-linecap="round"/>`).join('')}
+${[[32,20,7],[20,24,6],[44,24,6],[14,36,5.5],[50,36,5.5],[26,34,5],[38,34,5]].map(([x,y,r],i)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${i%2?'#3E8A3A':'#5BAE45'}"/>${H(`M${x-r+2} ${y}c0-2 1-3 2-4`)}`).join('')}`,
 };

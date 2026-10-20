@@ -6,11 +6,6 @@
    1,
    2,
    3,
-   4,
-   5,
-   6,
-   7,
-   8,
    9,
    10,
    11,
@@ -139,9 +134,6 @@
    1,
    2,
    3,
-   7,
-   8,
-   9,
    10,
    11,
    12
@@ -185,7 +177,6 @@
   "nom": "Blette",
   "categorie": "legume",
   "mois": [
-   5,
    6,
    7,
    8,
@@ -199,9 +190,6 @@
   "nom": "Brocoli",
   "categorie": "legume",
   "mois": [
-   6,
-   7,
-   8,
    9,
    10,
    11
@@ -227,7 +215,6 @@
    1,
    2,
    3,
-   9,
    10,
    11,
    12
@@ -241,7 +228,6 @@
    1,
    2,
    3,
-   9,
    10,
    11,
    12
@@ -255,7 +241,6 @@
    1,
    2,
    3,
-   9,
    10,
    11,
    12
@@ -269,7 +254,6 @@
    1,
    2,
    3,
-   9,
    10,
    11,
    12
@@ -282,6 +266,7 @@
   "mois": [
    1,
    2,
+   3,
    10,
    11,
    12
@@ -295,7 +280,6 @@
    1,
    2,
    3,
-   4,
    9,
    10,
    11,
@@ -323,7 +307,8 @@
    6,
    7,
    8,
-   9
+   9,
+   10
   ],
   "lieu": "marche"
  },
@@ -331,10 +316,12 @@
   "nom": "Courgette",
   "categorie": "legume",
   "mois": [
+   5,
    6,
    7,
    8,
-   9
+   9,
+   10
   ],
   "lieu": "marche"
  },
@@ -343,7 +330,6 @@
   "categorie": "legume",
   "mois": [
    1,
-   2,
    9,
    10,
    11,
@@ -356,7 +342,6 @@
   "categorie": "legume",
   "mois": [
    1,
-   2,
    9,
    10,
    11,
@@ -369,7 +354,6 @@
   "categorie": "legume",
   "mois": [
    1,
-   2,
    9,
    10,
    11,
@@ -382,7 +366,6 @@
   "categorie": "legume",
   "mois": [
    1,
-   2,
    9,
    10,
    11,
@@ -398,9 +381,8 @@
    2,
    3,
    4,
-   10,
-   11,
-   12
+   5,
+   10
   ],
   "lieu": "marche"
  },
@@ -408,13 +390,15 @@
   "nom": "Épinard",
   "categorie": "legume",
   "mois": [
+   1,
+   2,
    3,
    4,
    5,
-   6,
    9,
    10,
-   11
+   11,
+   12
   ],
   "lieu": "marche"
  },
@@ -422,6 +406,7 @@
   "nom": "Fenouil",
   "categorie": "legume",
   "mois": [
+   4,
    6,
    7,
    8,
@@ -448,7 +433,8 @@
    6,
    7,
    8,
-   9
+   9,
+   10
   ],
   "lieu": "marche"
  },
@@ -458,7 +444,6 @@
   "mois": [
    1,
    2,
-   3,
    10,
    11,
    12
@@ -469,6 +454,7 @@
   "nom": "Maïs",
   "categorie": "legume",
   "mois": [
+   7,
    8,
    9
   ],
@@ -481,6 +467,8 @@
    1,
    2,
    3,
+   4,
+   5,
    10,
    11,
    12
@@ -529,10 +517,10 @@
   "nom": "Poivron",
   "categorie": "legume",
   "mois": [
+   6,
    7,
    8,
-   9,
-   10
+   9
   ],
   "lieu": "marche"
  },
@@ -540,10 +528,10 @@
   "nom": "Radis",
   "categorie": "legume",
   "mois": [
+   3,
    4,
    5,
-   6,
-   7
+   6
   ],
   "lieu": "marche"
  },
@@ -551,13 +539,11 @@
   "nom": "Laitue",
   "categorie": "legume",
   "mois": [
-   4,
    5,
    6,
    7,
    8,
-   9,
-   10
+   9
   ],
   "lieu": "marche"
  },
@@ -578,8 +564,6 @@
   "mois": [
    1,
    2,
-   3,
-   10,
    11,
    12
   ],
@@ -635,6 +619,25 @@
   "mois": [
    1,
    2,
+   3,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Cresson",
+  "categorie": "legume",
+  "mois": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
    10,
    11,
    12
@@ -668,9 +671,6 @@
    2,
    3,
    4,
-   5,
-   6,
-   7,
    8,
    9,
    10,
@@ -693,7 +693,6 @@
   "nom": "Cerise",
   "categorie": "fruit",
   "mois": [
-   5,
    6,
    7
   ],
@@ -704,8 +703,7 @@
   "categorie": "fruit",
   "mois": [
    10,
-   11,
-   12
+   11
   ],
   "lieu": "marche"
  },
@@ -724,9 +722,7 @@
   "nom": "Coing",
   "categorie": "fruit",
   "mois": [
-   10,
-   11,
-   12
+   10
   ],
   "lieu": "marche"
  },
@@ -734,6 +730,7 @@
   "nom": "Figue",
   "categorie": "fruit",
   "mois": [
+   7,
    8,
    9,
    10
@@ -756,8 +753,7 @@
   "mois": [
    6,
    7,
-   8,
-   9
+   8
   ],
   "lieu": "marche"
  },
@@ -768,7 +764,6 @@
    1,
    2,
    3,
-   4,
    11,
    12
   ],
@@ -790,9 +785,7 @@
   "categorie": "fruit",
   "mois": [
    9,
-   10,
-   11,
-   12
+   10
   ],
   "lieu": "marche"
  },
@@ -802,8 +795,7 @@
   "mois": [
    1,
    2,
-   3,
-   12
+   3
   ],
   "lieu": "marche"
  },
@@ -822,8 +814,6 @@
   "nom": "Nectarine",
   "categorie": "fruit",
   "mois": [
-   6,
-   7,
    8,
    9
   ],
@@ -834,6 +824,8 @@
   "categorie": "fruit",
   "mois": [
    1,
+   2,
+   3,
    8,
    9,
    10,
@@ -885,6 +877,119 @@
    8,
    9,
    10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Cassis",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Groseille",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Mûre",
+  "categorie": "fruit",
+  "mois": [
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Myrtille",
+  "categorie": "fruit",
+  "mois": [
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Noisette",
+  "categorie": "fruit",
+  "mois": [
+   9,
+   10,
+   11
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Mandarine",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Pamplemousse",
+  "categorie": "fruit",
+  "mois": [
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Reine-claude",
+  "categorie": "fruit",
+  "mois": [
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Pastèque",
+  "categorie": "fruit",
+  "mois": [
+   6,
+   7,
+   8,
+   9
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Kaki",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   10,
+   11,
+   12
+  ],
+  "lieu": "marche"
+ },
+ {
+  "nom": "Grenade",
+  "categorie": "fruit",
+  "mois": [
+   1,
+   2,
    11,
    12
   ],
