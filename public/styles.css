@@ -295,3 +295,32 @@ button.bouton-secondaire { width: 100%; border: 0; font: inherit; font-weight: 6
   display: block; margin: 12px auto 0; padding: 6px 14px; border: 0; border-radius: 16px;
   font: inherit; font-size: 15px; font-weight: 600; color: var(--accent); background: var(--accent-clair); cursor: pointer;
 }
+
+/* --- Barre du bas, à portée du pouce (04 décision 24, 05 décision 10) --- */
+/* L'écran devient une colonne : la barre se place tout en bas, au-dessus des onglets,
+   même quand la page est courte, et reste collée en bas quand elle défile. */
+main:has(.barre-bas) {
+  display: flex; flex-direction: column;
+  min-height: calc(100vh - env(safe-area-inset-top) - 56px - env(safe-area-inset-bottom));
+  min-height: calc(100dvh - env(safe-area-inset-top) - 56px - env(safe-area-inset-bottom));
+  padding-bottom: 0;
+}
+.barre-bas {
+  position: sticky; z-index: 6; margin: auto -16px 0;
+  bottom: calc(50px + env(safe-area-inset-bottom));
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px 12px; background: var(--fond);
+}
+/* Clavier ouvert : la barre remonte juste au-dessus, les onglets passent dessous. */
+.clavier-ouvert .barre-bas { bottom: var(--clavier, 0px); }
+.clavier-ouvert .onglets { visibility: hidden; }
+.barre-bas .recherche { flex: 1; margin: 0; padding: 10px 12px; border-radius: 12px; }
+.barre-bas .recherche-place { flex: 1; }
+.barre-bas .bouton-rond { flex: none; margin: 0; width: 44px; height: 44px; background: var(--accent); color: #fff; }
+.barre-bas .bouton-rond .icone { width: 24px; height: 24px; }
+.barre-bas.pied { flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 16px; }
+.barre-bas.pied .groupe { width: 100%; }
+.barre-bas.boutons > * { flex: 1; margin: 0; }
+.barre-bas .bouton-principal, .barre-bas .bouton-secondaire { padding: 14px 8px; border-radius: 12px; }
+.segments.large { margin-top: 0; }
+body:has(.barre-bas) .message { bottom: calc(126px + env(safe-area-inset-bottom)); }

@@ -1,6 +1,6 @@
 // Onglet Bibliothèque (04 décisions 12, 13, 14, 19, 22, 23) : liste, fiche recette et brouillon à relire.
 import * as db from './db.js';
-import { el, svg, ICONES, message, groupe, vide, barre, vignette, mention } from './ui.js';
+import { el, svg, ICONES, message, groupe, vide, barre, barreBas, vignette, mention } from './ui.js';
 import {
   UNITES, MOIS, trierParNom, chercher, horsSaison, avertirMercredi,
   seCongele, formaterQuantite, aVerifier, nouvelId, categorie, infosCategorie, CATEGORIES_RECETTE,
@@ -48,17 +48,21 @@ export async function liste() {
   }
   remplir();
 
+  // Recherche et « + » en bas de l'écran, à portée du pouce (04 décision 24).
   return [
-    el('div', { class: 'entete-onglet' },
-      el('h1', {}, 'Bibliothèque'),
-      el('a', { class: 'bouton-rond', href: '#ajout', 'aria-label': 'Ajouter une recette' }, svg(ICONES.plus))),
-    recettes.length ? el('label', { class: 'recherche' }, svg(ICONES.loupe),
-      el('input', {
-        type: 'search', placeholder: 'Recette ou ingrédient', value: recherche, 'aria-label': 'Rechercher',
-        oninput: (e) => { recherche = e.target.value; remplir(); },
-      })) : null,
+    el('h1', {}, 'Bibliothèque'),
     recettes.length ? filtres : null,
     resultats,
+    barreBas(
+      recettes.length ? el('label', { class: 'recherche' }, svg(ICONES.loupe),
+        el('input', {
+          type: 'search', placeholder: 'Recette ou ingrédient', value: recherche, 'aria-label': 'Rechercher',
+          enterkeyhint: 'search',
+          oninput: (e) => { recherche = e.target.value; remplir(); },
+          onkeydown: (e) => { if (e.key === 'Enter') e.target.blur(); },
+        })) : el('span', { class: 'recherche-place' }),
+      el('a', { class: 'bouton-rond', href: '#ajout', 'aria-label': 'Ajouter une recette' }, svg(ICONES.plus)),
+    ),
   ];
 }
 
@@ -68,13 +72,14 @@ export function ajout() {
   return [
     barre({ retour: '#bibliotheque', titreRetour: 'Bibliothèque' }),
     el('h1', {}, 'Ajouter une recette'),
-    groupe(
+    // Les deux choix en bas de l'écran, à portée du pouce (04 décision 24).
+    barreBas({ pied: true }, groupe(
       el('a', { class: 'ligne lien', href: '#edition/nouvelle' },
         el('span', { class: 'ligne-texte' }, 'Créer à la main'), svg(ICONES.chevron, 'icone chevron')),
       el('a', { class: 'ligne lien', href: '#coller' },
         el('span', { class: 'ligne-texte' }, 'Coller une recette du skill Claude'), svg(ICONES.chevron, 'icone chevron')),
     ),
-    el('p', { class: 'pied-groupe' }, 'Pour importer un texte ou un lien, ou trouver une idée, passe par le skill Food4Seasons dans l’app Claude.'),
+    el('p', { class: 'pied-groupe' }, 'Pour importer un texte ou un lien, ou trouver une idée, passe par le skill Food4Seasons dans l’app Claude.')),
   ];
 }
 
@@ -112,12 +117,14 @@ export function coller() {
     barre({ retour: '#ajout', titreRetour: 'Ajouter' }),
     el('h1', {}, 'Coller une recette'),
     el('p', { class: 'pied-groupe intro' }, 'Dans l’app Claude, demande au skill Food4Seasons la recette « pour le site », copie le bloc qu’il rend, puis colle-le ici.'),
-    navigator.clipboard?.readText
-      ? el('button', { class: 'bouton-principal', type: 'button', onclick: collerPressePapiers }, 'Coller et lire')
-      : null,
     groupe(el('div', { class: 'ligne' }, zone)),
-    el('button', { class: 'bouton-secondaire', type: 'button', onclick: lire }, 'Lire la recette'),
     el('p', { class: 'pied-groupe' }, 'Rien n’est enregistré avant ta relecture : la recette s’ouvre dans le brouillon, avec les champs vides et les ingrédients nouveaux signalés.'),
+    // « Lire » et « Coller et lire » en bas de l'écran, à portée du pouce (04 décision 24).
+    barreBas({ boutons: true },
+      el('button', { class: 'bouton-secondaire', type: 'button', onclick: lire }, 'Lire la recette'),
+      navigator.clipboard?.readText
+        ? el('button', { class: 'bouton-principal', type: 'button', onclick: collerPressePapiers }, 'Coller et lire')
+        : null),
   ];
 }
 
