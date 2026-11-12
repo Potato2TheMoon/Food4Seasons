@@ -10,12 +10,12 @@ import { VERSION } from './version.js';
 const vue = document.getElementById('vue');
 const champFichier = document.getElementById('fichier-restauration');
 
-// --- Navigation : onglets (04 décision 3) et leurs écrans ---
+// --- Navigation : onglets (04 décisions 3, 21 et 25) et leurs écrans ---
 
 const ECRANS = {
   semaine: { onglet: 'semaine', afficher: (quelle) => semaine.semaine(quelle, rafraichir) },
   choix: { onglet: 'semaine', afficher: (id) => semaine.choix(id) },
-  courses: { onglet: 'semaine', afficher: (id) => courses.courses(id, rafraichir) },
+  courses: { onglet: 'courses', afficher: () => courses.courses(rafraichir) },
   congelateur: { onglet: 'congelateur', afficher: () => congelateur.inventaire(rafraichir) },
   bibliotheque: { onglet: 'bibliotheque', afficher: bibliotheque.liste },
   reglages: { onglet: 'reglages', afficher: () => [el('h1', {}, 'Réglages'), ...blocSauvegarde(), ...blocVersion()] },

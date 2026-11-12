@@ -1,4 +1,4 @@
-// Onglet Semaine (04 décisions 1, 2, 4, 5, 17, 18, 22, 23) : la semaine de cuisine et l'écran de choix des recettes.
+// Onglet Semaine (04 décisions 1, 2, 4, 5, 17, 18, 22, 23, 28) : la semaine de cuisine et l'écran de choix des recettes.
 import * as db from './db.js';
 import { el, svg, ICONES, message, groupe, vide, barre, vignette, mention } from './ui.js';
 import { MOIS, trierParNom, horsSaison, avertirMercredi, seCongele, categorie, infosCategorie, CATEGORIES_RECETTE } from './recettes.js';
@@ -46,11 +46,6 @@ function moisDe(id) {
 
 export async function lireSemaine(id) {
   return (await db.tout('semaines')).find((s) => s.id === id) ?? { id, recettes: [] };
-}
-
-function resteAAcheter(liste) {
-  const restants = liste.articles.filter((a) => !a.coche).length;
-  return restants ? `${restants} à acheter` : 'tout est pris';
 }
 
 // Boutons − et + autour d'un nombre.
@@ -147,12 +142,8 @@ export async function semaine(quelle, rafraichir) {
       ? [
         el('div', { class: 'entete-groupe' }, prevues.length > 1 ? 'Recettes de la semaine' : 'Recette de la semaine'),
         el('div', { class: 'pile' }, prevues.map(blocRecette)),
+        // La liste de courses est dans son onglet, sans bouton ici (04 décision 28).
         el('a', { class: 'bouton-secondaire', href: `#choix/${id}` }, 'Ajouter une recette'),
-        el('div', { class: 'entete-groupe' }, 'Courses'),
-        groupe(el('a', { class: 'ligne lien', href: `#courses/${id}` },
-          el('span', { class: 'ligne-texte' }, 'Liste de courses'),
-          donnees.liste ? el('span', { class: 'secondaire' }, resteAAcheter(donnees.liste)) : null,
-          svg(ICONES.chevron, 'icone chevron'))),
       ]
       : [
         vide('Aucune recette prévue', precedente

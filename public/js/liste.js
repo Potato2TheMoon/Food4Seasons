@@ -20,11 +20,12 @@ function ajouterQuantite(article, ajout) {
   else article.quantites.push({ ...ajout });
 }
 
-function nouvelArticle(liste, ingredient, lieu, complement) {
+function nouvelArticle(liste, ingredient, lieu, complement, manuel = false) {
   const article = {
     id: `a${liste.articles.length + 1}-${Math.random().toString(36).slice(2, 6)}`,
     ingredient, lieu, coche: false, quantites: [], complement,
   };
+  if (manuel) article.manuel = true;
   liste.articles.push(article);
   return article;
 }
@@ -37,7 +38,8 @@ function ajouterRecette(liste, recette, portions, lieuDe) {
     const ajout = ligne.quantite != null && ligne.unite && recette.portions
       ? enBase(ligne.quantite * portions / recette.portions, ligne.unite)
       : null; // « sans quantité » (sel, poivre…)
-    const principal = liste.articles.find((a) => a.ingredient === ligne.ingredient && !a.complement);
+    // Un article ajouté à la main reste à part : il ne reçoit pas les quantités des recettes.
+    const principal = liste.articles.find((a) => a.ingredient === ligne.ingredient && !a.complement && !a.manuel);
     if (!principal) {
       ajouterQuantite(nouvelArticle(liste, ligne.ingredient, lieuDe(ligne.ingredient), false), ajout);
     } else if (!principal.coche) {
@@ -67,6 +69,44 @@ export function mettreAJour(liste, prevues, recettes, lieuDe) {
     }
   }
   return change;
+}
+
+// --- Articles ajoutés à la main (04 décisions 25 à 27) ---
+
+// Lieu d'achat d'un article ajouté à la main : celui du catalogue si le nom y figure (sans tenir compte
+// de la casse), sinon le supermarché (04 décision 27). Rend aussi le nom tel qu'il est écrit au catalogue.
+export function placerArticle(saisie, catalogue) {
+  const nom = saisie.trim().replace(/\s+/g, ' ');
+  if (!nom) return null;
+  const cle = nom.toLocaleLowerCase('fr');
+  const connu = catalogue.find((i) => i.nom.toLocaleLowerCase('fr') === cle);
+  if (connu) return { nom: connu.nom, lieu: connu.lieu ?? 'supermarche' };
+  return { nom: nom[0].toLocaleUpperCase('fr') + nom.slice(1), lieu: 'supermarche' };
+}
+
+export function ajouterManuel(liste, nom, lieu) {
+  return nouvelArticle(liste, nom, lieu, false, true);
+}
+
+// Le lundi, les articles ajoutés à la main et non cochés des semaines passées passent dans la liste de
+// la nouvelle semaine ; les cochés restent avec leur semaine (04 décision 26).
+// Rend les semaines passées modifiées (à enregistrer), vide si rien n'a bougé.
+export function reporterManuels(liste, semainesPassees) {
+  const modifiees = [];
+  for (const semaine of semainesPassees) {
+    const ancienne = semaine.liste;
+    if (!ancienne) continue;
+    const aReporter = ancienne.articles.filter((a) => a.manuel && !a.coche);
+    if (!aReporter.length) continue;
+    for (const article of aReporter) {
+      if (!liste.articles.some((a) => a.manuel && !a.coche && a.ingredient === article.ingredient)) {
+        ajouterManuel(liste, article.ingredient, article.lieu);
+      }
+    }
+    ancienne.articles = ancienne.articles.filter((a) => !aReporter.includes(a));
+    modifiees.push(semaine);
+  }
+  return modifiees;
 }
 
 // Quantités d'un article, côte à côte si les unités ne s'additionnent pas (« 1 pièce + 200 g »).

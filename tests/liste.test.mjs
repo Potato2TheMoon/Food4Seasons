@@ -62,3 +62,50 @@ test('coché en bas de sa partie', () => {
   const marche = trierPartie(liste.articles.filter((a) => a.lieu === 'marche')).map((a) => a.ingredient);
   assert.deepEqual(marche, ['Potiron', 'Oignon']);
 });
+
+// --- Articles ajoutés à la main (04 décisions 25 à 27) ---
+import { placerArticle, ajouterManuel, reporterManuels } from '../public/js/liste.js';
+
+const catalogue = [{ nom: 'Poireau', lieu: 'marche' }, { nom: 'Riz', lieu: 'supermarche' }];
+
+test('article à la main : lieu du catalogue si le nom y figure, sinon supermarché', () => {
+  assert.deepEqual(placerArticle('  poireau ', catalogue), { nom: 'Poireau', lieu: 'marche' });
+  assert.deepEqual(placerArticle('lessive  liquide', catalogue), { nom: 'Lessive liquide', lieu: 'supermarche' });
+  assert.equal(placerArticle('   ', catalogue), null);
+});
+
+test('un article à la main ne reçoit pas les quantités des recettes', () => {
+  const liste = listeVide();
+  ajouterManuel(liste, 'Oignon', 'marche');
+  mettreAJour(liste, [{ recette: 's', portions: 4 }], recettes, lieuDe);
+  const oignons = liste.articles.filter((a) => a.ingredient === 'Oignon');
+  assert.equal(oignons.length, 2);
+  assert.equal(formaterArticle(oignons.find((a) => a.manuel), formaterQuantite), '');
+  assert.equal(formaterArticle(oignons.find((a) => !a.manuel), formaterQuantite), '1 pièce');
+});
+
+test('le lundi, les ajouts à la main non cochés passent à la nouvelle semaine', () => {
+  const ancienne = { id: '2026-11-08', liste: listeVide() };
+  mettreAJour(ancienne.liste, [{ recette: 's', portions: 4 }], recettes, lieuDe);
+  ajouterManuel(ancienne.liste, 'Pain', 'supermarche');
+  ajouterManuel(ancienne.liste, 'Lessive', 'supermarche').coche = true;
+  const nouvelle = listeVide();
+  ajouterManuel(nouvelle, 'Pain', 'supermarche'); // déjà rajouté à la main : pas de doublon
+  const modifiees = reporterManuels(nouvelle, [ancienne]);
+  assert.deepEqual(modifiees, [ancienne]);
+  assert.deepEqual(nouvelle.articles.map((a) => a.ingredient), ['Pain']);
+  assert.ok(!ancienne.liste.articles.some((a) => a.ingredient === 'Pain'));
+  assert.ok(ancienne.liste.articles.some((a) => a.ingredient === 'Lessive' && a.coche));
+  assert.ok(ancienne.liste.articles.some((a) => a.ingredient === 'Potiron'), 'les articles des recettes restent');
+  assert.deepEqual(reporterManuels(nouvelle, [ancienne]), [], 'rien à reporter la deuxième fois');
+});
+
+test('report depuis plusieurs semaines passées, en gardant le lieu', () => {
+  const s1 = { id: '2026-11-01', liste: listeVide() };
+  const s2 = { id: '2026-11-08', liste: listeVide() };
+  ajouterManuel(s1.liste, 'Poireau', 'marche');
+  ajouterManuel(s2.liste, 'Pain', 'supermarche');
+  const nouvelle = listeVide();
+  reporterManuels(nouvelle, [s1, s2, { id: '2026-10-25' }]);
+  assert.deepEqual(nouvelle.articles.map((a) => [a.ingredient, a.lieu, a.manuel]), [['Poireau', 'marche', true], ['Pain', 'supermarche', true]]);
+});
