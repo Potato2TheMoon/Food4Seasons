@@ -8,6 +8,8 @@ Site statique, sans serveur : les données restent dans Safari sur l'iPhone, ave
 - `public/` : le site publié tel quel (HTML, CSS, JavaScript, `catalogue.json`, icônes).
 - `catalogue-a-relire.md` : le catalogue d'ingrédients en version lisible, à relire avant validation.
 - `.github/workflows/pages.yml` : publication automatique sur GitHub Pages à chaque envoi sur la branche principale.
+- `.github/workflows/tests.yml` : syntaxe, JSON et tests à chaque pull request et envoi sur la branche principale.
+- `tests/` : tests du calcul (saison, portions, liste de courses, semaines, catalogue), à lancer avec `node --test tests/*.test.mjs`.
 
 ## Essayer en local
 
