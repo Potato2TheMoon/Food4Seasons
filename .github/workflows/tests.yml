@@ -20,9 +20,11 @@ jobs:
         with:
           node-version: 22
       - name: Syntaxe du JavaScript
-        run: for f in public/js/*.js; do node --check "$f"; done
+        run: |
+          for f in public/js/*.js; do node --check "$f"; done
       - name: JSON valides
-        run: for f in public/catalogue.json public/manifest.webmanifest public/version.json; do node -e "JSON.parse(require('fs').readFileSync('$f', 'utf8'))" || { echo "JSON invalide : $f"; exit 1; }; done
+        run: |
+          for f in public/catalogue.json public/manifest.webmanifest public/version.json; do node -e "JSON.parse(require('fs').readFileSync('$f', 'utf8'))" || { echo "JSON invalide : $f"; exit 1; }; done
       - name: Tests
         run: node --test tests/*.test.mjs
       # Le site est statique : la « construction » est la numérotation des fichiers faite par pages.yml.
