@@ -1,0 +1,39 @@
+# Vérifie le site à chaque pull request et à chaque envoi sur la branche principale.
+# Aucune dépendance à installer : Node suffit (node --check pour la syntaxe, node --test pour les tests).
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntaxe du JavaScript
+        run: for f in public/js/*.js; do node --check "$f"; done
+      - name: JSON valides
+        run: for f in public/catalogue.json public/manifest.webmanifest public/version.json; do node -e "JSON.parse(require('fs').readFileSync('$f', 'utf8'))" || { echo "JSON invalide : $f"; exit 1; }; done
+      - name: Tests
+        run: node --test tests/*.test.mjs
+      # Le site est statique : la « construction » est la numérotation des fichiers faite par pages.yml.
+      # On la rejoue ici sur une copie pour vérifier qu'elle trouve toujours ce qu'elle doit remplacer.
+      - name: Construction (essai de la numérotation)
+        run: |
+          V=essai00
+          cp -r public /tmp/site && cd /tmp/site
+          sed -i -E "s#(from '\./[a-z-]+\.js)'#\1?v=$V'#g" js/*.js
+          sed -i -e "s#href=\"styles.css\"#href=\"styles.css?v=$V\"#" -e "s#src=\"js/app.js\"#src=\"js/app.js?v=$V\"#" index.html
+          sed -i "s/VERSION = 'dev'/VERSION = '$V'/" js/version.js
+          grep -q "styles.css?v=$V" index.html && grep -q "js/app.js?v=$V" index.html
+          grep -q "'$V'" js/version.js
+          grep -q "?v=$V" js/app.js
