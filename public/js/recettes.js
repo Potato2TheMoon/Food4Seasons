@@ -75,6 +75,22 @@ export function formaterQuantite(quantite, unite) {
   return `${nombre} ${pluriel}`;
 }
 
+// Texte lisible envoyé par le bouton Partager de la fiche : nom, ingrédients pour les portions d'origine, étapes.
+// La conservation, les commentaires et la photo restent dans l'app.
+export function texteRecette(recette) {
+  const blocs = [recette.nom.trim()];
+  if (recette.lignes.length) {
+    const titre = recette.portions ? `Ingrédients pour ${recette.portions} portion${recette.portions > 1 ? 's' : ''}` : 'Ingrédients';
+    blocs.push([titre, ...recette.lignes.map((l) => {
+      const quantite = formaterQuantite(l.quantite, l.unite);
+      return quantite ? `- ${l.ingredient} : ${quantite}` : `- ${l.ingredient}`;
+    })].join('\n'));
+  }
+  const etapes = recette.etapes.map((e) => e.trim()).filter(Boolean);
+  if (etapes.length) blocs.push(['Étapes', ...etapes.map((e, i) => `${i + 1}. ${e}`)].join('\n'));
+  return blocs.join('\n\n');
+}
+
 // Ce que le brouillon signale à vérifier (04 décision 15) : champs vides et ingrédients nouveaux.
 export function aVerifier(recette, catalogue) {
   const connus = new Set(catalogue.map((i) => i.nom));

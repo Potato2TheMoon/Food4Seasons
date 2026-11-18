@@ -37,6 +37,7 @@ export const ICONES = {
   cercle: '<circle cx="12" cy="12" r="9"/>',
   coche: '<circle cx="12" cy="12" r="9" class="plein"/><path d="m7.8 12.3 2.8 2.8 5.6-5.8" class="trait"/>',
   echange: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
+  partager: '<path d="M12 3v12M8 7l4-4 4 4M8 10H6v10h12V10h-2"/>',
 };
 
 // Petite bulle en bas de l'écran ; avec une action (par exemple « Annuler »), elle reste un peu plus longtemps.
@@ -56,15 +57,20 @@ export function vide(titre, texte) {
   return groupe(el('div', { class: 'vide' }, el('strong', {}, titre), texte));
 }
 
-// Barre du haut d'un écran secondaire : retour à gauche, action à droite.
-export function barre({ retour, titreRetour, action, titreAction, actionPrincipale }) {
+// Barre du haut d'un écran secondaire : retour à gauche, action à droite, et une icône avant l'action si besoin.
+export function barre({ retour, titreRetour, action, titreAction, actionPrincipale, icone }) {
   return el('div', { class: 'barre-nav' },
     retour
       ? el('a', { class: 'barre-retour', href: retour }, svg(ICONES.retour), titreRetour)
       : el('span'),
-    action
-      ? el('button', { class: actionPrincipale ? 'barre-action principale' : 'barre-action', type: 'button', onclick: action }, titreAction)
-      : el('span'),
+    el('span', { class: 'barre-actions' },
+      icone
+        ? el('button', { class: 'barre-action barre-icone', type: 'button', 'aria-label': icone.titre, onclick: icone.action }, svg(ICONES[icone.nom]))
+        : null,
+      action
+        ? el('button', { class: actionPrincipale ? 'barre-action principale' : 'barre-action', type: 'button', onclick: action }, titreAction)
+        : null,
+    ),
   );
 }
 
