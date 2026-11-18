@@ -3,7 +3,7 @@ import * as db from './db.js';
 import { el, svg, ICONES, message, groupe, vide, barre, barreBas, vignette, mention } from './ui.js';
 import {
   UNITES, MOIS, trierParNom, chercher, horsSaison, avertirMercredi,
-  seCongele, formaterQuantite, aVerifier, nouvelId, categorie, infosCategorie, CATEGORIES_RECETTE,
+  seCongele, formaterQuantite, aVerifier, nouvelId, categorie, infosCategorie, CATEGORIES_RECETTE, texteRecette,
 } from './recettes.js';
 import { lireRecetteCollee } from './import.js';
 
@@ -157,7 +157,10 @@ export async function fiche(id) {
   ];
 
   return [
-    barre({ retour: '#bibliotheque', titreRetour: 'Bibliothèque', action: () => { location.hash = `#edition/${id}`; }, titreAction: 'Modifier' }),
+    barre({
+      retour: '#bibliotheque', titreRetour: 'Bibliothèque', action: () => { location.hash = `#edition/${id}`; }, titreAction: 'Modifier',
+      icone: { nom: 'partager', titre: 'Partager la recette', action: () => partager(recette) },
+    }),
     recette.image ? el('img', { class: 'banniere', src: recette.image, alt: '' }) : null,
     el('h1', { class: 'titre-fiche' }, recette.nom),
     el('div', { class: 'mentions' }, mentions),
@@ -187,6 +190,25 @@ export async function fiche(id) {
         el('span', { class: 'numero' }, i + 1), el('span', { class: 'ligne-texte' }, etape))))
       : vide('Aucune étape', ''),
   ];
+}
+
+// Feuille de partage du téléphone ; sans elle (Chrome ou Firefox sur le Mac), la recette est copiée.
+async function partager(recette) {
+  const texte = texteRecette(recette);
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: recette.nom, text: texte });
+      return;
+    } catch (erreur) {
+      if (erreur.name === 'AbortError') return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(texte);
+    message('Recette copiée');
+  } catch {
+    message('Impossible de partager la recette sur ce navigateur.');
+  }
 }
 
 // --- Brouillon à relire, aussi utilisé pour modifier (04 décision 13) ---
