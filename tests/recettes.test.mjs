@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { horsSaison, recalculer, formaterQuantite, chercher, normaliser, trierParNom, tientJusquauMercredi, seCongele, aVerifier } from '../public/js/recettes.js';
+import { horsSaison, recalculer, formaterQuantite, chercher, normaliser, trierParNom, tientJusquauMercredi, seCongele, aVerifier, portionsDemandees, lignesPourPortions } from '../public/js/recettes.js';
 
 const catalogue = JSON.parse(readFileSync(new URL('../public/catalogue.json', import.meta.url)));
 const l = (ingredient, quantite = null, unite = '') => ({ ingredient, quantite, unite });
@@ -83,4 +83,25 @@ test('brouillon complet : rien à vérifier, ingrédients nouveaux signalés', (
   const vide = { nom: ' ', portions: 0, lignes: [], etapes: [''] };
   assert.deepEqual(aVerifier(vide, petitCatalogue).manques,
     ['le nom', "le nombre de portions d'origine", 'les jours au frigo', 'la congélation', 'les ingrédients', 'les étapes']);
+});
+
+test('fiche : portions demandées par l’adresse, sinon celles d’origine (#8)', () => {
+  assert.equal(portionsDemandees('6', 4), 6);
+  assert.equal(portionsDemandees('', 4), 4);
+  assert.equal(portionsDemandees(undefined, 4), 4);
+  assert.equal(portionsDemandees('0', 4), 4);
+  assert.equal(portionsDemandees('-2', 4), 4);
+  assert.equal(portionsDemandees('2.5', 4), 4);
+  assert.equal(portionsDemandees('abc', 4), 4);
+});
+
+test('fiche et panneau Ingrédients : quantités recalculées pour les portions demandées (#8)', () => {
+  const recette = { portions: 4, lignes: [l('Potiron', 1, 'kg'), l('Oignon', 2, 'pièce'), l('Sel')] };
+  assert.deepEqual(lignesPourPortions(recette, 6), [
+    { ingredient: 'Potiron', quantite: '1,5 kg' },
+    { ingredient: 'Oignon', quantite: '3 pièces' },
+    { ingredient: 'Sel', quantite: '' },
+  ]);
+  assert.deepEqual(lignesPourPortions(recette, 4).map((x) => x.quantite), ['1 kg', '2 pièces', '']);
+  assert.deepEqual(lignesPourPortions({ portions: 4, lignes: [] }, 6), []);
 });

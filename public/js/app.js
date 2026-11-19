@@ -21,25 +21,28 @@ const ECRANS = {
   reglages: { onglet: 'reglages', afficher: () => [el('h1', {}, 'Réglages'), ...blocSauvegarde(), ...blocVersion()] },
   ajout: { onglet: 'bibliotheque', afficher: bibliotheque.ajout },
   coller: { onglet: 'bibliotheque', afficher: bibliotheque.coller },
-  recette: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.fiche(id) },
+  // Depuis la Semaine, l'adresse porte aussi les portions prévues : #recette/<id>/<portions>.
+  recette: { onglet: 'bibliotheque', afficher: (id, portions) => bibliotheque.fiche(id, portions) },
   edition: { onglet: 'bibliotheque', afficher: (id) => bibliotheque.edition(id, rafraichir) },
 };
 
 function route() {
-  const [nom, parametre] = location.hash.slice(1).split('/');
+  const [nom, parametre, complement] = location.hash.slice(1).split('/');
   // L'app s'ouvre sur la semaine (04 décision 1).
-  return ECRANS[nom] ? { ecran: ECRANS[nom], nom, parametre: decodeURIComponent(parametre ?? '') } : { ecran: ECRANS.semaine, nom: 'semaine' };
+  return ECRANS[nom]
+    ? { ecran: ECRANS[nom], nom, parametre: decodeURIComponent(parametre ?? ''), complement: decodeURIComponent(complement ?? '') }
+    : { ecran: ECRANS.semaine, nom: 'semaine' };
 }
 
 async function dessiner() {
-  const { ecran, nom, parametre } = route();
+  const { ecran, nom, parametre, complement } = route();
   if (nom !== 'edition') bibliotheque.quitterEdition();
   if (nom !== 'choix') semaine.quitterChoix();
   for (const lien of document.querySelectorAll('.onglets a')) {
     if (lien.dataset.onglet === ecran.onglet) lien.setAttribute('aria-current', 'page');
     else lien.removeAttribute('aria-current');
   }
-  vue.replaceChildren(...(await ecran.afficher(parametre)).flat(Infinity).filter((e) => e != null && e !== false));
+  vue.replaceChildren(...(await ecran.afficher(parametre, complement)).flat(Infinity).filter((e) => e != null && e !== false));
 }
 
 async function afficher() {
