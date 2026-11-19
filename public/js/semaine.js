@@ -93,7 +93,8 @@ export async function semaine(quelle, rafraichir) {
   function blocRecette(prevue) {
     const recette = recettes.get(prevue.recette);
     return groupe(
-      el('a', { class: 'ligne lien', href: `#recette/${recette.id}` },
+      // La fiche s'ouvre avec les quantités pour les portions prévues cette semaine (#8).
+      el('a', { class: 'ligne lien', href: `#recette/${recette.id}/${prevue.portions}` },
         vignette(recette),
         el('span', { class: 'ligne-texte' }, recette.nom,
           el('span', { class: 'mentions' },

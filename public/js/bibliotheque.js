@@ -4,6 +4,7 @@ import { el, svg, ICONES, message, groupe, vide, barre, barreBas, vignette, ment
 import {
   UNITES, MOIS, trierParNom, chercher, horsSaison, avertirMercredi,
   seCongele, formaterQuantite, aVerifier, nouvelId, categorie, infosCategorie, CATEGORIES_RECETTE, texteRecette,
+  portionsDemandees, lignesPourPortions,
 } from './recettes.js';
 import { lireRecetteCollee } from './import.js';
 
@@ -130,12 +131,19 @@ export function coller() {
 
 // --- Fiche recette ---
 
-export async function fiche(id) {
+export async function fiche(id, portionsTexte) {
   const recette = (await db.tout('recettes')).find((r) => r.id === id);
   if (!recette) return [barre({ retour: '#bibliotheque', titreRetour: 'Bibliothèque' }), vide('Recette introuvable', '')];
   const catalogue = await db.tout('ingredients');
   const mois = new Date().getMonth() + 1;
   const hors = horsSaison(recette, catalogue, mois);
+  const portions = portionsDemandees(portionsTexte, recette.portions);
+  const titreIngredients = `Ingrédients pour ${portions} portion${portions > 1 ? 's' : ''}`;
+  const listeIngredients = () => groupe(lignesPourPortions(recette, portions).map((l) =>
+    el('div', { class: 'ligne' }, l.ingredient, el('span', { class: 'secondaire' }, l.quantite))));
+  const blocIngredients = el('div', {},
+    el('div', { class: 'entete-groupe' }, titreIngredients),
+    recette.lignes.length ? listeIngredients() : vide('Aucun ingrédient', ''));
 
   // Commentaires de toutes les semaines où la recette a été cuisinée, le plus récent en premier (02).
   const commentaires = (await db.tout('semaines'))
@@ -172,11 +180,7 @@ export async function fiche(id) {
         recette.congelMois === undefined ? 'non renseigné' : seCongele(recette) ? `${recette.congelMois} mois` : 'ne se congèle pas')),
     ),
 
-    el('div', { class: 'entete-groupe' }, `Ingrédients pour ${recette.portions} portion${recette.portions > 1 ? 's' : ''}`),
-    recette.lignes.length
-      ? groupe(recette.lignes.map((l) => el('div', { class: 'ligne' }, l.ingredient,
-        el('span', { class: 'secondaire' }, formaterQuantite(l.quantite, l.unite)))))
-      : vide('Aucun ingrédient', ''),
+    blocIngredients,
 
     commentaires.length ? [
       el('div', { class: 'entete-groupe' }, 'Commentaires'),
@@ -189,7 +193,33 @@ export async function fiche(id) {
       ? groupe(recette.etapes.map((etape, i) => el('div', { class: 'ligne etape' },
         el('span', { class: 'numero' }, i + 1), el('span', { class: 'ligne-texte' }, etape))))
       : vide('Aucune étape', ''),
+    recette.lignes.length ? panneauIngredients(blocIngredients, titreIngredients, listeIngredients) : null,
   ];
+}
+
+// Bouton « Ingrédients » collé en bas pendant qu'on lit les étapes (#8) : il n'apparaît
+// qu'une fois le bloc Ingrédients passé au-dessus de l'écran et ouvre la liste par-dessus la page.
+function panneauIngredients(bloc, titre, liste) {
+  const panneau = el('dialog', { class: 'panneau-ingredients', 'aria-label': titre },
+    el('div', { class: 'panneau-entete' },
+      el('strong', {}, titre),
+      el('button', { class: 'barre-action principale', type: 'button', onclick: () => panneau.close() }, 'Fermer')),
+    el('div', { class: 'panneau-contenu' }, liste()));
+  // Toucher à côté du panneau le ferme aussi.
+  panneau.addEventListener('click', (e) => { if (e.target === panneau) panneau.close(); });
+  const bouton = el('button', { class: 'bouton-ingredients', type: 'button', hidden: true, onclick: () => panneau.showModal() },
+    svg(ICONES.liste), 'Ingrédients');
+  if ('IntersectionObserver' in window) {
+    let affiche = false;
+    const observateur = new IntersectionObserver(([entree]) => {
+      // Écran quitté : la fiche a été remplacée, on arrête de l'observer.
+      if (!bloc.isConnected) return affiche && observateur.disconnect();
+      affiche = true;
+      bouton.hidden = entree.isIntersecting || entree.boundingClientRect.bottom > 0;
+    });
+    observateur.observe(bloc);
+  }
+  return [bouton, panneau];
 }
 
 // Feuille de partage du téléphone ; sans elle (Chrome ou Firefox sur le Mac), la recette est copiée.

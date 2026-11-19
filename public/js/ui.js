@@ -38,6 +38,7 @@ export const ICONES = {
   coche: '<circle cx="12" cy="12" r="9" class="plein"/><path d="m7.8 12.3 2.8 2.8 5.6-5.8" class="trait"/>',
   echange: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
   partager: '<path d="M12 3v12M8 7l4-4 4 4M8 10H6v10h12V10h-2"/>',
+  liste: '<path d="M9 6h11M9 12h11M9 18h11M4.5 6v.01M4.5 12v.01M4.5 18v.01"/>',
 };
 
 // Petite bulle en bas de l'écran ; avec une action (par exemple « Annuler »), elle reste un peu plus longtemps.

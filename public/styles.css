@@ -326,3 +326,26 @@ main:has(.barre-bas) {
 .barre-bas .bouton-principal, .barre-bas .bouton-secondaire { padding: 14px 8px; border-radius: 12px; }
 .segments.large { margin-top: 0; }
 body:has(.barre-bas) .message { bottom: calc(126px + env(safe-area-inset-bottom)); }
+
+/* --- Ingrédients pendant le défilement de la fiche (#8) --- */
+.bouton-ingredients {
+  position: fixed; z-index: 8; left: 50%; transform: translateX(-50%);
+  bottom: calc(66px + env(safe-area-inset-bottom));
+  display: flex; align-items: center; gap: 6px; padding: 10px 18px;
+  font: inherit; font-size: 15px; font-weight: 600; color: #fff; background: var(--accent);
+  border: 0; border-radius: 22px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); cursor: pointer;
+}
+.bouton-ingredients[hidden] { display: none; }
+.bouton-ingredients .icone { width: 18px; height: 18px; stroke-width: 2.2; }
+.panneau-ingredients {
+  width: 100%; max-width: 640px; max-height: 75vh; max-height: 75dvh;
+  margin: auto auto 0; padding: 0; border: 0; border-radius: 14px 14px 0 0;
+  background: var(--fond); color: var(--texte);
+}
+.panneau-ingredients[open] { display: flex; flex-direction: column; }
+.panneau-ingredients::backdrop { background: rgba(0,0,0,0.35); }
+.panneau-entete { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 10px; }
+.panneau-contenu { overflow-y: auto; padding: 0 16px calc(16px + env(safe-area-inset-bottom)); }
+body:has(.bouton-ingredients:not([hidden])) .message { bottom: calc(118px + env(safe-area-inset-bottom)); }
+/* Place pour que le bouton ne cache pas la fin de la dernière étape. */
+main:has(.bouton-ingredients) { padding-bottom: 72px; }

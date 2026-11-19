@@ -75,6 +75,20 @@ export function formaterQuantite(quantite, unite) {
   return `${nombre} ${pluriel}`;
 }
 
+// Portions demandées dans l'adresse de la fiche (depuis la Semaine) ; sinon celles d'origine.
+export function portionsDemandees(texte, portionsOrigine) {
+  const n = Number(texte);
+  return Number.isInteger(n) && n > 0 ? n : portionsOrigine;
+}
+
+// Lignes de la fiche et du panneau Ingrédients : nom et quantité pour les portions demandées.
+export function lignesPourPortions(recette, portions) {
+  return recette.lignes.map((l) => ({
+    ingredient: l.ingredient,
+    quantite: formaterQuantite(recalculer(l.quantite, recette.portions, portions), l.unite),
+  }));
+}
+
 // Texte lisible envoyé par le bouton Partager de la fiche : nom, ingrédients pour les portions d'origine, étapes.
 // La conservation, les commentaires et la photo restent dans l'app.
 export function texteRecette(recette) {
