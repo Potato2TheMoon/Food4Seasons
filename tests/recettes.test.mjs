@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { horsSaison, recalculer, formaterQuantite, chercher, normaliser, trierParNom, tientJusquauMercredi, seCongele, aVerifier, portionsDemandees, lignesPourPortions } from '../public/js/recettes.js';
+import { horsSaison, recalculer, formaterQuantite, chercher, normaliser, trierParNom, tientJusquauMercredi, seCongele, aVerifier, portionsDemandees, lignesPourPortions, boutonIngredientsVisible, fermerApresGlissement, vitesseFinale } from '../public/js/recettes.js';
 
 const catalogue = JSON.parse(readFileSync(new URL('../public/catalogue.json', import.meta.url)));
 const l = (ingredient, quantite = null, unite = '') => ({ ingredient, quantite, unite });
@@ -104,4 +104,28 @@ test('fiche et panneau Ingrédients : quantités recalculées pour les portions 
   ]);
   assert.deepEqual(lignesPourPortions(recette, 4).map((x) => x.quantite), ['1 kg', '2 pièces', '']);
   assert.deepEqual(lignesPourPortions({ portions: 4, lignes: [] }, 6), []);
+});
+
+test('bouton Ingrédients : visible dès que la 1re ligne passe sous la barre du haut (#10)', () => {
+  assert.equal(boutonIngredientsVisible(300, 60), false); // liste entièrement visible
+  assert.equal(boutonIngredientsVisible(60, 60), false); // ligne juste sous la barre
+  assert.equal(boutonIngredientsVisible(59, 60), true); // elle commence à être cachée
+  assert.equal(boutonIngredientsVisible(-500, 60), true); // liste sortie de l'écran
+});
+
+test('panneau Ingrédients : fermé en glissant assez loin ou assez vite, sinon remis en place (#10)', () => {
+  assert.equal(fermerApresGlissement(120, 0.1, 400), true); // plus de 25 % de la hauteur
+  assert.equal(fermerApresGlissement(90, 0.1, 400), false); // lent et court : revient
+  assert.equal(fermerApresGlissement(60, 0.8, 400), true); // geste rapide
+  assert.equal(fermerApresGlissement(20, 2, 400), false); // trop court même rapide
+  assert.equal(fermerApresGlissement(-150, -1, 400), false); // vers le haut
+  assert.equal(fermerApresGlissement(0, 0, 400), false);
+});
+
+test('vitesse en fin de geste : le coup sec final compte, pas la lenteur du début (#10)', () => {
+  const lentPuisRapide = [{ y: 0, t: 0 }, { y: 10, t: 400 }, { y: 20, t: 800 }, { y: 50, t: 850 }, { y: 80, t: 900 }];
+  assert.equal(vitesseFinale(lentPuisRapide), 0.6);
+  assert.equal(vitesseFinale([{ y: 0, t: 0 }, { y: 40, t: 400 }]), 0.1);
+  assert.equal(vitesseFinale([{ y: 0, t: 0 }]), 0);
+  assert.equal(vitesseFinale([{ y: 0, t: 5 }, { y: 30, t: 5 }]), 0);
 });

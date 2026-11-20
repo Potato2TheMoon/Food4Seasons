@@ -89,6 +89,31 @@ export function lignesPourPortions(recette, portions) {
   }));
 }
 
+// Bouton « Ingrédients » de la fiche (#10) : visible dès que la 1re ligne commence à passer
+// sous la barre du haut (collante), caché quand la liste redevient entièrement visible.
+export function boutonIngredientsVisible(hautPremiereLigne, basBarre) {
+  return hautPremiereLigne < basBarre;
+}
+
+// Panneau Ingrédients glissé vers le bas (#10) : fermé au-delà de 25 % de sa hauteur, ou par un
+// geste rapide vers le bas (> 0,5 px/ms à la fin du geste) d'au moins 30 px ; sinon il revient en place.
+export function fermerApresGlissement(deplacement, vitesse, hauteurPanneau) {
+  if (deplacement <= 0) return false;
+  if (deplacement > hauteurPanneau * 0.25) return true;
+  return deplacement >= 30 && vitesse > 0.5;
+}
+
+// Vitesse en fin de geste (px/ms), mesurée sur les ~100 dernières ms : un coup sec final compte
+// même si le geste a commencé lentement. points : [{ y, t }] dans l'ordre.
+export function vitesseFinale(points, fenetreMs = 100) {
+  if (points.length < 2) return 0;
+  const dernier = points[points.length - 1];
+  const premier = points.find((p) => dernier.t - p.t <= fenetreMs) ?? points[0];
+  const debut = premier === dernier ? points[points.length - 2] : premier;
+  const duree = dernier.t - debut.t;
+  return duree > 0 ? (dernier.y - debut.y) / duree : 0;
+}
+
 // Texte lisible envoyé par le bouton Partager de la fiche : nom, ingrédients pour les portions d'origine, étapes.
 // La conservation, les commentaires et la photo restent dans l'app.
 export function texteRecette(recette) {
