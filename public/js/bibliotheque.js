@@ -4,7 +4,7 @@ import { el, svg, ICONES, message, groupe, vide, barre, barreBas, vignette, ment
 import {
   UNITES, MOIS, trierParNom, chercher, horsSaison, avertirMercredi,
   seCongele, formaterQuantite, aVerifier, nouvelId, categorie, infosCategorie, CATEGORIES_RECETTE, texteRecette,
-  portionsDemandees, lignesPourPortions,
+  portionsDemandees, lignesPourPortions, boutonIngredientsVisible, fermerApresGlissement, vitesseFinale,
 } from './recettes.js';
 import { lireRecetteCollee } from './import.js';
 
@@ -197,29 +197,89 @@ export async function fiche(id, portionsTexte) {
   ];
 }
 
-// Bouton « Ingrédients » collé en bas pendant qu'on lit les étapes (#8) : il n'apparaît
-// qu'une fois le bloc Ingrédients passé au-dessus de l'écran et ouvre la liste par-dessus la page.
+// Bouton « Ingrédients » collé en bas pendant qu'on lit les étapes (#8) : il apparaît dès que la
+// 1re ligne commence à passer sous la barre du haut (#10) et ouvre la liste par-dessus la page.
 function panneauIngredients(bloc, titre, liste) {
+  const contenu = el('div', { class: 'panneau-contenu' }, liste());
   const panneau = el('dialog', { class: 'panneau-ingredients', 'aria-label': titre },
+    el('div', { class: 'panneau-poignee', 'aria-hidden': 'true' }),
     el('div', { class: 'panneau-entete' },
       el('strong', {}, titre),
       el('button', { class: 'barre-action principale', type: 'button', onclick: () => panneau.close() }, 'Fermer')),
-    el('div', { class: 'panneau-contenu' }, liste()));
+    contenu);
   // Toucher à côté du panneau le ferme aussi.
   panneau.addEventListener('click', (e) => { if (e.target === panneau) panneau.close(); });
+  glisserPourFermer(panneau, contenu);
   const bouton = el('button', { class: 'bouton-ingredients', type: 'button', hidden: true, onclick: () => panneau.showModal() },
     svg(ICONES.liste), 'Ingrédients');
-  if ('IntersectionObserver' in window) {
-    let affiche = false;
-    const observateur = new IntersectionObserver(([entree]) => {
-      // Écran quitté : la fiche a été remplacée, on arrête de l'observer.
-      if (!bloc.isConnected) return affiche && observateur.disconnect();
-      affiche = true;
-      bouton.hidden = entree.isIntersecting || entree.boundingClientRect.bottom > 0;
-    });
-    observateur.observe(bloc);
-  }
+
+  let enAttente = false;
+  const verifier = () => {
+    enAttente = false;
+    // Écran quitté : la fiche a été remplacée, on arrête d'écouter le défilement.
+    if (!bloc.isConnected) return arreter();
+    const ligne = bloc.querySelector('.ligne');
+    const barreNav = document.querySelector('.barre-nav');
+    if (!ligne) return;
+    const basBarre = barreNav ? barreNav.getBoundingClientRect().bottom : 0;
+    bouton.hidden = !boutonIngredientsVisible(ligne.getBoundingClientRect().top, basBarre);
+  };
+  const planifier = () => { if (!enAttente) { enAttente = true; requestAnimationFrame(verifier); } };
+  const arreter = () => {
+    window.removeEventListener('scroll', planifier);
+    window.removeEventListener('resize', planifier);
+  };
+  window.addEventListener('scroll', planifier, { passive: true });
+  window.addEventListener('resize', planifier);
+  planifier();
   return [bouton, panneau];
+}
+
+// Fermer le panneau en le faisant glisser vers le bas, comme une feuille iOS (#10). Le geste part de la
+// poignée ou de l'en-tête, ou du contenu quand sa liste est tout en haut (sinon elle défile normalement).
+function glisserPourFermer(panneau, contenu) {
+  let depart = null; // { y, actif, dansContenu, points: [{ y, t }] }
+  const remettre = () => { panneau.style.transition = ''; panneau.style.transform = ''; };
+  panneau.addEventListener('close', remettre);
+  panneau.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1 || e.target === panneau) return (depart = null);
+    const dansContenu = contenu.contains(e.target);
+    if (dansContenu && contenu.scrollTop > 0) return (depart = null);
+    const y = e.touches[0].clientY;
+    depart = { y, actif: false, dansContenu, points: [{ y, t: e.timeStamp }] };
+  }, { passive: true });
+  panneau.addEventListener('touchmove', (e) => {
+    if (!depart) return;
+    const y = e.touches[0].clientY;
+    const deplacement = y - depart.y;
+    depart.points.push({ y, t: e.timeStamp });
+    if (!depart.actif) {
+      // Vers le haut depuis le contenu : c'est un défilement de la liste, pas une fermeture.
+      if (deplacement < 0 && depart.dansContenu) return (depart = null);
+      if (deplacement <= 0) return;
+      depart.actif = true;
+      panneau.style.transition = 'none';
+    }
+    e.preventDefault();
+    panneau.style.transform = `translateY(${Math.max(0, deplacement)}px)`;
+  }, { passive: false });
+  const finir = (e) => {
+    if (!depart || !depart.actif) return (depart = null);
+    const { points } = depart;
+    const deplacement = points[points.length - 1].y - depart.y;
+    const vitesse = vitesseFinale(points);
+    depart = null;
+    panneau.style.transition = 'transform 0.2s ease-out';
+    if (e.type === 'touchend' && fermerApresGlissement(deplacement, vitesse, panneau.offsetHeight)) {
+      panneau.style.transform = 'translateY(100%)';
+      setTimeout(() => panneau.close(), 200);
+    } else {
+      panneau.style.transform = '';
+      setTimeout(() => { panneau.style.transition = ''; }, 200);
+    }
+  };
+  panneau.addEventListener('touchend', finir);
+  panneau.addEventListener('touchcancel', finir);
 }
 
 // Feuille de partage du téléphone ; sans elle (Chrome ou Firefox sur le Mac), la recette est copiée.
